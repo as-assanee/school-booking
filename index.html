@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ระบบจองห้องประชุมและรถราชการ | โรงเรียน</title>
+
+  <!-- Fonts: Prompt (UI) & Sarabun (เอกสารราชการ) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+            doc: ['Sarabun', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- LINE LIFF SDK -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Smooth scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* Glass & Card elevation */
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.22s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Print Styling สำหรับพิมพ์ใบขออนุญาตแบบราชการ A4 */
+    #printArea {
+      display: none;
+    }
+    @media print {
+      @page { size: A4 portrait; margin: 1.5cm; }
+      body { background: #ffffff !important; }
+      #appRoot, #toastContainer, #modalOverlay { display: none !important; }
+      #printArea {
+        display: block !important;
+        font-family: 'Sarabun', sans-serif !important;
+        color: #000000 !important;
+        font-size: 16px;
+        line-height: 1.65;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- ====================================================================== -->
+  <!-- ROOT APPLICATION CONTAINER                                             -->
+  <!-- ====================================================================== -->
+  <div id="appRoot" class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- LOADING SPLASH SCREEN -->
+    <div id="loadingScreen" class="fixed inset-0 z-50 bg-slate-50 flex flex-col items-center justify-center p-6">
+      <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 animate-pulse mb-4">
+        <i data-lucide="calendar-check-2" class="w-7 h-7"></i>
+      </div>
+      <h2 class="text-lg font-semibold text-slate-800">กำลังเชื่อมต่อระบบจองโรงเรียน</h2>
+      <p id="loadingSubtext" class="text-sm text-slate-500 mt-1">กำลังตรวจสอบสิทธิ์ผู้ใช้งาน...</p>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- SELF-REGISTRATION SCREEN (สำหรับบุคลากรที่เปิด LINE LIFF ครั้งแรก)    -->
+    <!-- ==================================================================== -->
+    <div id="registerScreen" class="hidden fixed inset-0 z-40 bg-gradient-to-br from-indigo-50 via-white to-sky-50 overflow-y-auto p-4 flex items-center justify-center">
+      <div class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-slate-200/70 border border-slate-100 p-6 sm:p-8 fade-in my-auto">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 mb-3">
+            <i data-lucide="user-plus" class="w-8 h-8"></i>
+          </div>
+          <h1 class="text-xl font-bold text-slate-900">ลงทะเบียนบุคลากรครั้งแรก</h1>
+          <p id="regSchoolName" class="text-sm text-slate-500 mt-1">ระบบจองห้องประชุมและรถราชการ</p>
+          <div id="regLineBadge" class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            เชื่อมต่อบัญชี LINE อัตโนมัติแล้ว
+          </div>
+        </div>
+
+        <form id="registerForm" onsubmit="document.getElementById('regPasscode').value = APP_CONFIG.DEMO_PASSCODE;" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">คำนำหน้า ชื่อ - นามสกุล <span class="text-rose-500">*</span></label>
+            <input type="text" id="regFullName" required placeholder="เช่น นายสมชาย ใจดี"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">ตำแหน่ง <span class="text-rose-500">*</span></label>
+              <input type="text" id="regPosition" required value="ครู" placeholder="เช่น ครู ชำนาญการ"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">เบอร์โทรศัพท์ <span class="text-rose-500">*</span></label>
+              <input type="tel" id="regPhone" required placeholder="08X-XXX-XXXX"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">กลุ่มสาระการเรียนรู้ / ฝ่ายงาน <span class="text-rose-500">*</span></label>
+            <select id="regDepartment" required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm bg-white">
+              <option value="">-- เลือกกลุ่มสาระฯ / ฝ่ายงาน --</option>
+              <option>ฝ่ายบริหาร</option>
+              <option>กลุ่มบริหารงานวิชาการ</option>
+              <option>กลุ่มบริหารงานบุคคล</option>
+              <option>กลุ่มบริหารงานงบประมาณ</option>
+              <option>กลุ่มบริหารงานทั่วไป / อาคารสถานที่</option>
+              <option>ภาษาไทย</option>
+              <option>คณิตศาสตร์</option>
+              <option>วิทยาศาสตร์และเทคโนโลยี</option>
+              <option>สังคมศึกษา ศาสนา และวัฒนธรรม</option>
+              <option>สุขศึกษาและพลศึกษา</option>
+              <option>ศิลปะ</option>
+              <option>การงานอาชีพ</option>
+              <option>ภาษาต่างประเทศ</option>
+              <option>กิจกรรมพัฒนาผู้เรียน / แนะแนว</option>
+              <option>งานโสตทัศนศึกษา</option>
+              <option>งานยานพาหนะ</option>
+            </select>
+          </div>
+
+          <!-- ปิดการใช้ช่องรหัสยืนยันบุคลากร (ลงทะเบียนได้ทันที) -->
+          <input type="hidden" id="regPasscode" value="NO_PASSCODE" />
+
+          <button type="submit" id="regSubmitBtn"
+            class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold text-sm shadow-md shadow-indigo-200 transition flex items-center justify-center gap-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            ยืนยันการลงทะเบียนและเข้าใช้งาน
+          </button>
+
+          <button type="button" id="regCancelDemoBtn" class="hidden w-full py-2 text-xs text-slate-500 hover:text-slate-700">
+            กลับเข้าสู่หน้าแอป (โหมดทดสอบ)
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- DESKTOP LEFT SIDEBAR                                                 -->
+    <!-- ==================================================================== -->
+    <aside id="desktopSidebar" class="hidden md:flex md:flex-col md:w-64 lg:w-72 bg-white border-r border-slate-200/80 shrink-0 sticky top-0 h-screen z-20">
+      <div class="p-5 border-b border-slate-100 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-200 shrink-0">
+          <i data-lucide="school" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <h1 id="sidebarSchoolName" class="font-bold text-slate-900 text-sm truncate">โรงเรียนตัวอย่างวิทยาคม</h1>
+          <p class="text-[11px] text-slate-500">ระบบจองห้องประชุม & รถราชการ</p>
+        </div>
+      </div>
+
+      <nav class="flex-1 p-3 space-y-1 overflow-y-auto" id="sidebarNav">
+        <!-- Populated dynamically based on role -->
+      </nav>
+
+      <!-- User Profile Card -->
+      <div class="p-4 border-t border-slate-100 bg-slate-50/70">
+        <div class="flex items-center gap-3">
+          <div id="sidebarAvatar" class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-sm shrink-0">
+            U
+          </div>
+          <div class="min-w-0 flex-1">
+            <p id="sidebarUserName" class="text-sm font-semibold text-slate-800 truncate">-</p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span id="sidebarUserRole" class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-100 text-indigo-700">Teacher</span>
+              <span id="sidebarUserDept" class="text-[11px] text-slate-500 truncate">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================================================================== -->
+    <!-- MAIN WORKSPACE                                                       -->
+    <!-- ==================================================================== -->
+    <div id="mainShell" class="hidden flex-1 flex flex-col min-w-0 pb-20 md:pb-6">
+
+      <!-- TOP HEADER (Mobile + Demo Switcher Bar) -->
+      <header class="sticky top-0 z-20 glass-nav border-b border-slate-200/70 px-4 py-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="md:hidden w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm shrink-0">
+            <i data-lucide="school" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <h2 id="pageTitle" class="font-bold text-slate-900 text-base sm:text-lg truncate">ภาพรวมตารางการใช้</h2>
+            <p id="mobileUserSub" class="md:hidden text-[11px] text-slate-500 truncate">-</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <!-- Demo Role Switcher (แสดงเฉพาะเมื่อยังไม่เชื่อมต่อ GAS จริง) -->
+          <div id="demoBar" class="hidden flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl">
+            <span class="hidden sm:inline text-[11px] font-semibold text-amber-800">โหมดทดสอบ:</span>
+            <select id="demoRoleSelect" class="text-xs font-medium text-amber-900 bg-transparent outline-none cursor-pointer">
+              <option value="Admin">ผู้ดูแลระบบ / ผอ.</option>
+              <option value="Approver">รองฯ ผู้อนุมัติ</option>
+              <option value="Teacher">ครูผู้ใช้งาน</option>
+              <option value="AV_Staff">จนท.โสตฯ</option>
+              <option value="Driver">พนักงานขับรถ</option>
+              <option value="REGISTER_TEST">ทดสอบหน้าลงทะเบียน</option>
+            </select>
+          </div>
+
+          <button onclick="refreshData(true)" title="รีเฟรชข้อมูลล่าสุด"
+            class="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 active:scale-95 transition">
+            <i data-lucide="refresh-cw" id="refreshIcon" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- DYNAMIC PAGE CONTENT -->
+      <main id="pageContent" class="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-6">
+        <!-- Rendered by JS -->
+      </main>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- MOBILE BOTTOM NAVIGATION BAR (LINE LIFF Friendly)                    -->
+    <!-- ==================================================================== -->
+    <nav id="mobileBottomNav" class="hidden md:hidden fixed bottom-0 inset-x-0 z-30 glass-nav border-t border-slate-200/80 px-2 py-1.5 shadow-[0_-4px_20px_rgba(15,23,42,0.06)]">
+      <div id="mobileNavGrid" class="grid grid-cols-5 gap-1 max-w-md mx-auto">
+        <!-- Populated dynamically -->
+      </div>
+    </nav>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- MODAL OVERLAY & TOAST NOTIFICATIONS (แทน alert() / confirm() 100%)     -->
+  <!-- ====================================================================== -->
+  <div id="modalOverlay" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div id="modalBox" class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden fade-in">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
+
+  <!-- ====================================================================== -->
+  <!-- PRINTABLE OFFICIAL DOCUMENT AREA (ใบขออนุญาตแบบราชการ A4)               -->
+  <!-- ====================================================================== -->
+  <div id="printArea"></div>
+
+  <!-- ====================================================================== -->
+  <!-- APPLICATION JAVASCRIPT                                                 -->
+  <!-- ====================================================================== -->
+  <script>
+    // ========================================================================
+    // 1. ตั้งค่าการเชื่อมต่อระบบจริง (นำ URL จาก Google Apps Script และ LIFF ID มาใส่ที่นี่)
+    // ========================================================================
+    const APP_CONFIG = {
+      SCHOOL_NAME: 'โรงเรียนตัวอย่างวิทยาคม',
+      LIFF_ID: '',          // ตัวอย่าง: '2006123456-AbCdEfGh' (เว้นว่างไว้เพื่อใช้งานโหมดทดสอบ)
+      GAS_WEB_APP_URL: '',  // ตัวอย่าง: 'https://script.google.com/macros/s/AKfycb.../exec'
+      DEMO_PASSCODE: 'NO_PASSCODE' // ไม่ต้องกรอกรหัสยืนยันบุคลากรแล้ว
+    };
+
+    const IS_LIVE_MODE = Boolean(APP_CONFIG.GAS_WEB_APP_URL && APP_CONFIG.GAS_WEB_APP_URL.startsWith('http'));
+
+    // ========================================================================
+    // 2. APPLICATION STATE
+    // ========================================================================
+    const state = {
+      activeTab: 'dashboard',
+      dashboardType: 'room', // 'room' | 'vehicle'
+      dashboardViewMode: 'calendar', // 'calendar' | 'list'
+      dashboardDateFilter: 'all', // 'today' | 'tomorrow' | 'all' | 'custom'
+      dashboardCustomDate: getTodayYMD(),
+      calendarYear: new Date().getFullYear(),
+      calendarMonth: new Date().getMonth(),
+      calendarSelectedDate: getTodayYMD(),
+      calendarResourceFilter: 'ALL',
+      myBookingTab: 'upcoming', // 'upcoming' | 'history'
+// ... existing code ... -->
+          <!-- Schedule Explorer Section -->
+          <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <!-- Switcher Room / Vehicle -->
+              <div class="inline-flex p-1 rounded-xl bg-slate-100 self-start">
+                <button onclick="setDashboardType('room')" class="px-4 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${state.dashboardType === 'room' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}">
+                  <i data-lucide="building-2" class="w-3.5 h-3.5"></i> ตารางห้องประชุม
+                </button>
+                <button onclick="setDashboardType('vehicle')" class="px-4 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${state.dashboardType === 'vehicle' ? 'bg-white text-sky-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}">
+                  <i data-lucide="bus" class="w-3.5 h-3.5"></i> ตารางรถราชการ
+                </button>
+              </div>
+
+              <!-- View Mode Switcher (ปฏิทิน / รายการ) -->
+              <div class="inline-flex p-1 rounded-xl bg-slate-100 self-start sm:self-auto">
+                <button onclick="setDashboardViewMode('calendar')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${state.dashboardViewMode === 'calendar' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}">
+                  <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> ปฏิทิน
+                </button>
+                <button onclick="setDashboardViewMode('list')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${state.dashboardViewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}">
+                  <i data-lucide="list" class="w-3.5 h-3.5"></i> รายการ
+                </button>
+              </div>
+            </div>
+
+            ${state.dashboardViewMode === 'calendar' ? renderDashboardCalendar() : `
+              <div class="px-4 sm:px-5 pt-4 flex flex-wrap items-center gap-1.5">
+                ${renderDateChip('today', 'วันนี้')}
+                ${renderDateChip('tomorrow', 'พรุ่งนี้')}
+                ${renderDateChip('all', 'กำลังจะมาถึงทั้งหมด')}
+                <input type="date" value="${state.dashboardCustomDate}" onchange="setDashboardCustomDate(this.value)"
+                  class="px-2.5 py-1 rounded-lg border ${state.dashboardDateFilter === 'custom' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-600'} text-xs outline-none cursor-pointer" />
+              </div>
+
+              <div class="p-4 sm:p-5">
+                ${filtered.length === 0 ? `
+                  <div class="text-center py-10">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                      <i data-lucide="calendar-x" class="w-6 h-6"></i>
+                    </div>
+                    <p class="text-sm font-medium text-slate-600">ไม่มีรายการจองในช่วงเวลาที่เลือก</p>
+                    <p class="text-xs text-slate-400 mt-1">ห้องและรถว่างพร้อมให้บริการ สามารถกดจองได้ทันที</p>
+                  </div>
+                ` : `
+                  <div class="space-y-3">
+                    ${filtered.map(b => renderScheduleCard(state.dashboardType, b)).join('')}
+                  </div>
+                `}
+              </div>
+            `}
+          </div>
+
+          <!-- Resource Status Overview -->
+          <div>
+            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+              <i data-lucide="${state.dashboardType === 'room' ? 'door-open' : 'car'}" class="w-4 h-4 text-indigo-600"></i>
+              สถานะ${state.dashboardType === 'room' ? 'ห้องประชุม' : 'รถราชการ'}ทั้งหมด
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              ${state.dashboardType === 'room'
+                ? state.rooms.map(r => `
+                  <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <div class="flex items-start justify-between gap-2">
+                        <span class="font-semibold text-sm text-slate-900">${esc(r.Room_Name)}</span>
+                        ${resourceStatusBadge(r.Status)}
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">${esc(r.Building)} • จุ ${r.Capacity} คน</p>
+                      <p class="text-[11px] text-slate-400 mt-2 line-clamp-2">${esc(r.Amenities)}</p>
+                    </div>
+                  </div>
+                `).join('')
+                : state.vehicles.map(v => `
+                  <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <div class="flex items-start justify-between gap-2">
+                        <span class="font-semibold text-sm text-slate-900">${esc(v.Vehicle_Name)}</span>
+                        ${resourceStatusBadge(v.Status)}
+                      </div>
+                      <p class="text-xs font-medium text-sky-700 mt-1">${esc(v.Plate_Number)}</p>
+                      <p class="text-[11px] text-slate-500 mt-1">${esc(v.Vehicle_Type)} • ${v.Seats} ที่นั่ง</p>
+                    </div>
+                  </div>
+                `).join('')
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDateChip(id, label) {
+      const active = state.dashboardDateFilter === id;
+      return `<button onclick="setDashboardDateFilter('${id}')" class="px-3 py-1 rounded-lg text-xs font-medium transition ${
+        active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+      }">${label}</button>`;
+    }
+
+    function setDashboardType(t) {
+      state.dashboardType = t;
+      state.calendarResourceFilter = 'ALL';
+      renderCurrentPage();
+    }
+    function setDashboardViewMode(mode) { state.dashboardViewMode = mode; renderCurrentPage(); }
+    function setDashboardDateFilter(f) { state.dashboardDateFilter = f; renderCurrentPage(); }
+    function setDashboardCustomDate(d) { state.dashboardCustomDate = d; state.dashboardDateFilter = 'custom'; renderCurrentPage(); }
+    function setCalendarResourceFilter(val) { state.calendarResourceFilter = val; renderCurrentPage(); }
+
+    function changeCalendarMonth(delta) {
+      const d = new Date(state.calendarYear, state.calendarMonth + delta, 1);
+      state.calendarYear = d.getFullYear();
+      state.calendarMonth = d.getMonth();
+      renderCurrentPage();
+    }
+
+    function goCalendarToday() {
+      const now = new Date();
+      state.calendarYear = now.getFullYear();
+      state.calendarMonth = now.getMonth();
+      state.calendarSelectedDate = getTodayYMD();
+      renderCurrentPage();
+    }
+
+    function selectCalendarDate(ymd) {
+      state.calendarSelectedDate = ymd;
+      renderCurrentPage();
+    }
+
+    function quickBookFromDate(type, ymd) {
+      if (type === 'room') {
+        state.roomForm.bookingDate = ymd;
+        if (state.calendarResourceFilter !== 'ALL') {
+          state.roomForm.roomId = state.calendarResourceFilter;
+        }
+        switchTab('book-room');
+      } else {
+        state.vehicleForm.startDate = ymd;
+        state.vehicleForm.endDate = ymd;
+        if (state.calendarResourceFilter !== 'ALL') {
+          state.vehicleForm.vehicleId = state.calendarResourceFilter;
+        }
+        switchTab('book-vehicle');
+      }
+    }
+
+    function getBookingsForDate(type, ymd, resourceFilter = 'ALL') {
+      if (type === 'room') {
+        return state.roomBookings.filter(b => {
+          if (b.Status === 'Cancelled' || b.Status === 'Rejected') return false;
+          if (resourceFilter !== 'ALL' && b.Room_ID !== resourceFilter) return false;
+          return b.Booking_Date === ymd;
+        }).sort((a, b) => String(a.Start_Time).localeCompare(String(b.Start_Time)));
+      }
+      return state.vehicleBookings.filter(b => {
+        if (b.Status === 'Cancelled' || b.Status === 'Rejected') return false;
+        if (resourceFilter !== 'ALL' && b.Vehicle_ID !== resourceFilter) return false;
+        return b.Start_Date <= ymd && b.End_Date >= ymd;
+      }).sort((a, b) => String(a.Start_Time).localeCompare(String(b.Start_Time)));
+    }
+
+    function renderDashboardCalendar() {
+      const isRoom = state.dashboardType === 'room';
+      const year = state.calendarYear;
+      const month = state.calendarMonth;
+      const todayYmd = getTodayYMD();
+      const selectedYmd = state.calendarSelectedDate;
+
+      const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+      const dayHeaders = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+
+      const firstWeekday = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const totalCells = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
+
+      // ตัวเลือกกรองเฉพาะห้องหรือรถ
+      const resourceOptions = isRoom
+        ? state.rooms.map(r => `<option value="${r.Room_ID}" ${state.calendarResourceFilter === r.Room_ID ? 'selected' : ''}>${esc(r.Room_Name)}</option>`).join('')
+        : state.vehicles.map(v => `<option value="${v.Vehicle_ID}" ${state.calendarResourceFilter === v.Vehicle_ID ? 'selected' : ''}>${esc(v.Vehicle_Name)} (${esc(v.Plate_Number)})</option>`).join('');
+
+      let cellsHtml = '';
+      for (let i = 0; i < totalCells; i++) {
+        const dayNum = i - firstWeekday + 1;
+        if (dayNum < 1 || dayNum > daysInMonth) {
+          cellsHtml += `<div class="min-h-[60px] sm:min-h-[96px] bg-slate-50/60 border-b border-r border-slate-100"></div>`;
+          continue;
+        }
+
+        const ymd = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+        const bookings = getBookingsForDate(state.dashboardType, ymd, state.calendarResourceFilter);
+        const isToday = ymd === todayYmd;
+        const isSelected = ymd === selectedYmd;
+        const isPast = ymd < todayYmd;
+        const isWeekend = (i % 7 === 0 || i % 7 === 6);
+
+        const approvedCount = bookings.filter(b => b.Status === 'Approved').length;
+        const pendingCount = bookings.filter(b => b.Status === 'Pending').length;
+
+        // แสดงผลแบบ Compact Dots บนมือถือ และ Pill ชื่อรายการบนจอใหญ่
+        const desktopPills = bookings.slice(0, 2).map(b => {
+          const pillStyle = b.Status === 'Pending'
+            ? 'bg-amber-100 text-amber-800 border-amber-200'
+            : (isRoom ? 'bg-indigo-100 text-indigo-800 border-indigo-200' : 'bg-sky-100 text-sky-800 border-sky-200');
+          const label = isRoom ? `${b.Start_Time} ${b.Room_Name}` : `${b.Start_Time} ${b.Vehicle_Name}`;
+          return `<div class="hidden sm:block truncate text-[10px] font-medium px-1.5 py-0.5 rounded border ${pillStyle}">${esc(label)}</div>`;
+        }).join('');
+
+        const morePill = bookings.length > 2
+          ? `<div class="hidden sm:block text-[10px] font-semibold text-slate-500 px-1">+${bookings.length - 2} รายการ</div>`
+          : '';
+
+        const mobileIndicators = bookings.length > 0
+          ? `<div class="sm:hidden flex items-center justify-center gap-1 mt-1.5 flex-wrap">
+              ${approvedCount > 0 ? `<span class="w-2 h-2 rounded-full ${isRoom ? 'bg-indigo-500' : 'bg-sky-500'}"></span>` : ''}
+              ${pendingCount > 0 ? `<span class="w-2 h-2 rounded-full bg-amber-400"></span>` : ''}
+              ${bookings.length > 1 ? `<span class="text-[9px] font-bold text-slate-500">${bookings.length}</span>` : ''}
+            </div>`
+          : (!isPast ? `<div class="sm:hidden flex justify-center mt-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400/80"></span></div>` : '');
+
+        cellsHtml += `
+          <button type="button" onclick="selectCalendarDate('${ymd}')"
+            class="text-left min-h-[60px] sm:min-h-[96px] p-1.5 sm:p-2 border-b border-r border-slate-100 transition flex flex-col justify-start gap-1 relative ${
+              isSelected
+                ? (isRoom ? 'bg-indigo-50/80 ring-2 ring-inset ring-indigo-500 z-10' : 'bg-sky-50/80 ring-2 ring-inset ring-sky-500 z-10')
+                : isPast
+                  ? 'bg-slate-50/40 hover:bg-slate-100/60'
+                  : 'bg-white hover:bg-slate-50'
+            }">
+            <div class="flex items-center justify-between w-full">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${
+                isToday
+                  ? (isRoom ? 'bg-indigo-600 text-white' : 'bg-sky-600 text-white')
+                  : isWeekend
+                    ? 'text-rose-500'
+                    : isPast ? 'text-slate-400' : 'text-slate-700'
+              }">${dayNum}</span>
+              ${bookings.length === 0 && !isPast
+                ? `<span class="hidden sm:inline text-[10px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">ว่าง</span>`
+                : ''
+              }
+            </div>
+            <div class="w-full space-y-1">
+              ${desktopPills}
+              ${morePill}
+              ${mobileIndicators}
+            </div>
+          </button>
+        `;
+      }
+
+      const selectedDayBookings = getBookingsForDate(state.dashboardType, selectedYmd, state.calendarResourceFilter);
+      const canBookSelectedDay = selectedYmd >= todayYmd;
+
+      return `
+        <div class="p-4 sm:p-5 space-y-4">
+          <!-- Calendar Toolbar -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <!-- Month Switcher -->
+            <div class="flex items-center justify-between sm:justify-start gap-2">
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 active:scale-95 transition">
+                  <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </button>
+                <div class="min-w-[150px] text-center font-bold text-sm sm:text-base text-slate-900">
+                  ${thaiMonths[month]} ${year + 543}
+                </div>
+                <button type="button" onclick="changeCalendarMonth(1)" class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 active:scale-95 transition">
+                  <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <button type="button" onclick="goCalendarToday()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
+                วันนี้
+              </button>
+            </div>
+
+            <!-- Filter by specific room / vehicle -->
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-slate-500 whitespace-nowrap">แสดงเฉพาะ:</label>
+              <select onchange="setCalendarResourceFilter(this.value)"
+                class="flex-1 sm:flex-none px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-500">
+                <option value="ALL">${isRoom ? 'ห้องประชุมทั้งหมด' : 'รถราชการทุกคัน'}</option>
+                ${resourceOptions}
+              </select>
+            </div>
+          </div>
+
+          <!-- Status Legend -->
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-slate-600">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> ว่าง (ไม่มีจอง)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full ${isRoom ? 'bg-indigo-500' : 'bg-sky-500'}"></span> อนุมัติแล้ว</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> รออนุมัติ</span>
+            <span class="text-slate-400 hidden sm:inline">• กดเลือกวันที่ในปฏิทินเพื่อดูคิวและกดจองทันที</span>
+          </div>
+
+          <!-- 7-Column Calendar Grid -->
+          <div class="rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="grid grid-cols-7 bg-slate-100/90 border-b border-slate-200">
+              ${dayHeaders.map((h, idx) => `
+                <div class="py-2 text-center text-[11px] font-bold ${idx === 0 || idx === 6 ? 'text-rose-500' : 'text-slate-600'}">${h}</div>
+              `).join('')}
+            </div>
+            <div class="grid grid-cols-7 border-l border-t border-transparent">
+              ${cellsHtml}
+            </div>
+          </div>
+
+          <!-- Selected Date Detail Panel -->
+          <div class="rounded-2xl bg-slate-50 border border-slate-200/80 p-4 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <p class="text-[11px] font-semibold uppercase tracking-wide ${isRoom ? 'text-indigo-600' : 'text-sky-600'}">
+                  รายละเอียดประจำวันที่เลือก
+                </p>
+                <h4 class="font-bold text-sm sm:text-base text-slate-900">
+                  วันที่ ${formatThaiDateFull(selectedYmd)}
+                  <span class="text-xs font-normal text-slate-500">(${selectedDayBookings.length} รายการ)</span>
+                </h4>
+              </div>
+              ${canBookSelectedDay ? `
+                <button type="button" onclick="quickBookFromDate('${state.dashboardType}', '${selectedYmd}')"
+                  class="self-start sm:self-auto px-4 py-2 rounded-xl ${isRoom ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-sky-600 hover:bg-sky-700'} text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-95 transition">
+                  <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                  จอง${isRoom ? 'ห้องประชุม' : 'รถราชการ'}วันนี้เลย
+                </button>
+              ` : `<span class="text-xs text-slate-400">วันที่ผ่านมาแล้ว</span>`}
+            </div>
+
+            ${selectedDayBookings.length === 0 ? `
+              <div class="bg-white rounded-2xl border border-emerald-200/80 p-5 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-emerald-900">ว่างตลอดทั้งวัน</p>
+                  <p class="text-xs text-slate-500">ยังไม่มีรายการจอง${isRoom ? 'ห้องประชุม' : 'รถราชการ'}ในวันที่เลือก สามารถกดปุ่มจองด้านบนได้ทันที</p>
+                </div>
+              </div>
+            ` : `
+              <div class="space-y-2.5">
+                ${selectedDayBookings.map(b => renderScheduleCard(state.dashboardType, b)).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderScheduleCard(type, b) {
+// ... existing code ... -->

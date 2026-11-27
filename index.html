@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ระบบจองห้องประชุมและรถราชการ | โรงเรียน</title>
+  <title>ระบบจองห้องประชุมและรถราชการ | โรงเรียนจะนะชนูปถัมภ์</title>
 
   <!-- Fonts: Prompt (UI) & Sarabun (เอกสารราชการ) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,16 +19,6 @@
           fontFamily: {
             sans: ['Prompt', 'sans-serif'],
             doc: ['Sarabun', 'sans-serif']
-          },
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              900: '#312e81'
-            }
           }
         }
       }
@@ -48,13 +38,11 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Smooth scrollbars */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-    /* Glass & Card elevation */
     .glass-nav {
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(12px);
@@ -99,8 +87,8 @@
       <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 animate-pulse mb-4">
         <i data-lucide="calendar-check-2" class="w-7 h-7"></i>
       </div>
-      <h2 class="text-lg font-semibold text-slate-800">กำลังเชื่อมต่อระบบจองโรงเรียน</h2>
-      <p id="loadingSubtext" class="text-sm text-slate-500 mt-1">กำลังตรวจสอบสิทธิ์ผู้ใช้งาน...</p>
+      <h2 class="text-lg font-semibold text-slate-800">โรงเรียนจะนะชนูปถัมภ์</h2>
+      <p id="loadingSubtext" class="text-sm text-slate-500 mt-1">กำลังเชื่อมต่อบัญชี LINE และตรวจสอบสิทธิ์...</p>
     </div>
 
     <!-- ==================================================================== -->
@@ -113,17 +101,17 @@
             <i data-lucide="user-plus" class="w-8 h-8"></i>
           </div>
           <h1 class="text-xl font-bold text-slate-900">ลงทะเบียนบุคลากรครั้งแรก</h1>
-          <p id="regSchoolName" class="text-sm text-slate-500 mt-1">ระบบจองห้องประชุมและรถราชการ</p>
+          <p id="regSchoolName" class="text-sm text-slate-500 mt-1">โรงเรียนจะนะชนูปถัมภ์</p>
           <div id="regLineBadge" class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            เชื่อมต่อบัญชี LINE อัตโนมัติแล้ว
+            <span id="regLineNameText">เชื่อมต่อบัญชี LINE อัตโนมัติแล้ว</span>
           </div>
         </div>
 
-        <form id="registerForm" onsubmit="document.getElementById('regPasscode').value = APP_CONFIG.DEMO_PASSCODE;" class="space-y-4">
+        <form id="registerForm" class="space-y-4">
           <div>
             <label class="block text-xs font-medium text-slate-700 mb-1">คำนำหน้า ชื่อ - นามสกุล <span class="text-rose-500">*</span></label>
-            <input type="text" id="regFullName" required placeholder="เช่น นายสมชาย ใจดี"
+            <input type="text" id="regFullName" required placeholder="เช่น นายอัสนี รัตนชัย"
               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm" />
           </div>
 
@@ -164,17 +152,10 @@
             </select>
           </div>
 
-          <!-- ปิดการใช้ช่องรหัสยืนยันบุคลากร (ลงทะเบียนได้ทันที) -->
-          <input type="hidden" id="regPasscode" value="NO_PASSCODE" />
-
           <button type="submit" id="regSubmitBtn"
             class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold text-sm shadow-md shadow-indigo-200 transition flex items-center justify-center gap-2">
             <i data-lucide="check-circle-2" class="w-4 h-4"></i>
             ยืนยันการลงทะเบียนและเข้าใช้งาน
-          </button>
-
-          <button type="button" id="regCancelDemoBtn" class="hidden w-full py-2 text-xs text-slate-500 hover:text-slate-700">
-            กลับเข้าสู่หน้าแอป (โหมดทดสอบ)
           </button>
         </form>
       </div>
@@ -189,19 +170,17 @@
           <i data-lucide="school" class="w-5 h-5"></i>
         </div>
         <div class="min-w-0">
-          <h1 id="sidebarSchoolName" class="font-bold text-slate-900 text-sm truncate">โรงเรียนตัวอย่างวิทยาคม</h1>
+          <h1 id="sidebarSchoolName" class="font-bold text-slate-900 text-sm truncate">โรงเรียนจะนะชนูปถัมภ์</h1>
           <p class="text-[11px] text-slate-500">ระบบจองห้องประชุม & รถราชการ</p>
         </div>
       </div>
 
-      <nav class="flex-1 p-3 space-y-1 overflow-y-auto" id="sidebarNav">
-        <!-- Populated dynamically based on role -->
-      </nav>
+      <nav class="flex-1 p-3 space-y-1 overflow-y-auto" id="sidebarNav"></nav>
 
       <!-- User Profile Card -->
       <div class="p-4 border-t border-slate-100 bg-slate-50/70">
         <div class="flex items-center gap-3">
-          <div id="sidebarAvatar" class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-sm shrink-0">
+          <div id="sidebarAvatar" class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-sm shrink-0 overflow-hidden">
             U
           </div>
           <div class="min-w-0 flex-1">
@@ -220,32 +199,19 @@
     <!-- ==================================================================== -->
     <div id="mainShell" class="hidden flex-1 flex flex-col min-w-0 pb-20 md:pb-6">
 
-      <!-- TOP HEADER (Mobile + Demo Switcher Bar) -->
+      <!-- TOP HEADER -->
       <header class="sticky top-0 z-20 glass-nav border-b border-slate-200/70 px-4 py-3 flex items-center justify-between gap-3">
         <div class="flex items-center gap-2.5 min-w-0">
           <div class="md:hidden w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm shrink-0">
             <i data-lucide="school" class="w-5 h-5"></i>
           </div>
           <div class="min-w-0">
-            <h2 id="pageTitle" class="font-bold text-slate-900 text-base sm:text-lg truncate">ภาพรวมตารางการใช้</h2>
+            <h2 id="pageTitle" class="font-bold text-slate-900 text-base sm:text-lg truncate">ภาพรวมและปฏิทิน</h2>
             <p id="mobileUserSub" class="md:hidden text-[11px] text-slate-500 truncate">-</p>
           </div>
         </div>
 
         <div class="flex items-center gap-2 shrink-0">
-          <!-- Demo Role Switcher (แสดงเฉพาะเมื่อยังไม่เชื่อมต่อ GAS จริง) -->
-          <div id="demoBar" class="hidden flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl">
-            <span class="hidden sm:inline text-[11px] font-semibold text-amber-800">โหมดทดสอบ:</span>
-            <select id="demoRoleSelect" class="text-xs font-medium text-amber-900 bg-transparent outline-none cursor-pointer">
-              <option value="Admin">ผู้ดูแลระบบ / ผอ.</option>
-              <option value="Approver">รองฯ ผู้อนุมัติ</option>
-              <option value="Teacher">ครูผู้ใช้งาน</option>
-              <option value="AV_Staff">จนท.โสตฯ</option>
-              <option value="Driver">พนักงานขับรถ</option>
-              <option value="REGISTER_TEST">ทดสอบหน้าลงทะเบียน</option>
-            </select>
-          </div>
-
           <button onclick="refreshData(true)" title="รีเฟรชข้อมูลล่าสุด"
             class="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 active:scale-95 transition">
             <i data-lucide="refresh-cw" id="refreshIcon" class="w-4 h-4"></i>
@@ -254,28 +220,22 @@
       </header>
 
       <!-- DYNAMIC PAGE CONTENT -->
-      <main id="pageContent" class="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-6">
-        <!-- Rendered by JS -->
-      </main>
+      <main id="pageContent" class="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-6"></main>
     </div>
 
     <!-- ==================================================================== -->
     <!-- MOBILE BOTTOM NAVIGATION BAR (LINE LIFF Friendly)                    -->
     <!-- ==================================================================== -->
     <nav id="mobileBottomNav" class="hidden md:hidden fixed bottom-0 inset-x-0 z-30 glass-nav border-t border-slate-200/80 px-2 py-1.5 shadow-[0_-4px_20px_rgba(15,23,42,0.06)]">
-      <div id="mobileNavGrid" class="grid grid-cols-5 gap-1 max-w-md mx-auto">
-        <!-- Populated dynamically -->
-      </div>
+      <div id="mobileNavGrid" class="grid grid-cols-5 gap-1 max-w-md mx-auto"></div>
     </nav>
   </div>
 
   <!-- ====================================================================== -->
-  <!-- MODAL OVERLAY & TOAST NOTIFICATIONS (แทน alert() / confirm() 100%)     -->
+  <!-- MODAL OVERLAY & TOAST NOTIFICATIONS                                    -->
   <!-- ====================================================================== -->
   <div id="modalOverlay" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div id="modalBox" class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden fade-in">
-      <!-- Populated dynamically -->
-    </div>
+    <div id="modalBox" class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden fade-in"></div>
   </div>
 
   <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
@@ -290,16 +250,13 @@
   <!-- ====================================================================== -->
   <script>
     // ========================================================================
-    // 1. ตั้งค่าการเชื่อมต่อระบบจริง (นำ URL จาก Google Apps Script และ LIFF ID มาใส่ที่นี่)
+    // 1. ตั้งค่าการเชื่อมต่อระบบจริง (โรงเรียนจะนะชนูปถัมภ์)
     // ========================================================================
     const APP_CONFIG = {
-      SCHOOL_NAME: 'โรงเรียนตัวอย่างวิทยาคม',
-      LIFF_ID: '',          // ตัวอย่าง: '2006123456-AbCdEfGh' (เว้นว่างไว้เพื่อใช้งานโหมดทดสอบ)
-      GAS_WEB_APP_URL: '',  // ตัวอย่าง: 'https://script.google.com/macros/s/AKfycb.../exec'
-      DEMO_PASSCODE: 'NO_PASSCODE' // ไม่ต้องกรอกรหัสยืนยันบุคลากรแล้ว
+      SCHOOL_NAME: 'โรงเรียนจะนะชนูปถัมภ์',
+      LIFF_ID: '2012824375-7JdM4XJD',
+      GAS_WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbzeCtbrGugMQb83JqL3Im6fApPEH6gewqAFR4l6rPX4NUIulGT1XtbMf6MWzvylfrFH/exec'
     };
-
-    const IS_LIVE_MODE = Boolean(APP_CONFIG.GAS_WEB_APP_URL && APP_CONFIG.GAS_WEB_APP_URL.startsWith('http'));
 
     // ========================================================================
     // 2. APPLICATION STATE
@@ -315,7 +272,603 @@
       calendarSelectedDate: getTodayYMD(),
       calendarResourceFilter: 'ALL',
       myBookingTab: 'upcoming', // 'upcoming' | 'history'
-// ... existing code ... -->
+      myBookingTypeFilter: 'ALL',
+      approvalTab: 'pending', // 'pending' | 'history'
+      adminTab: 'rooms', // 'rooms' | 'vehicles' | 'drivers' | 'users'
+      lineProfile: {
+        userId: '',
+        displayName: '',
+        pictureUrl: ''
+      },
+      user: null,
+      rooms: [],
+      vehicles: [],
+      drivers: [],
+      roomBookings: [],
+      vehicleBookings: [],
+      users: [],
+      roomForm: {
+        roomId: '',
+        bookingDate: getTodayYMD(),
+        startTime: '08:30',
+        endTime: '12:00',
+        title: '',
+        attendees: 30,
+        seatingStyle: 'ปกติ',
+        equipment: ['เครื่องเสียง / ไมโครโฟน'],
+        note: ''
+      },
+      vehicleForm: {
+        vehicleId: '',
+        startDate: getTodayYMD(),
+        startTime: '08:00',
+        endDate: getTodayYMD(),
+        endTime: '16:30',
+        purpose: '',
+        destination: '',
+        province: 'สงขลา',
+        docRef: '',
+        teacherCount: 2,
+        studentCount: 10,
+        driverId: 'AUTO',
+        note: ''
+      },
+      isSubmitting: false
+    };
+
+    // ========================================================================
+    // 3. DATE & UTILITY HELPERS
+    // ========================================================================
+    function getTodayYMD() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getTomorrowYMD() {
+      const tmr = new Date();
+      tmr.setDate(tmr.getDate() + 1);
+      const y = tmr.getFullYear();
+      const m = String(tmr.getMonth() + 1).padStart(2, '0');
+      const d = String(tmr.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatThaiDateShort(ymd) {
+      if (!ymd) return '-';
+      const p = String(ymd).split('-');
+      if (p.length !== 3) return ymd;
+      const months = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      return `${Number(p[2])} ${months[Number(p[1])]} ${Number(p[0]) + 543}`;
+    }
+
+    function formatThaiDateFull(ymd) {
+      if (!ymd) return '-';
+      const p = String(ymd).split('-');
+      if (p.length !== 3) return ymd;
+      const months = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+      return `${Number(p[2])} ${months[Number(p[1])]} พ.ศ. ${Number(p[0]) + 543}`;
+    }
+
+    function toTimestamp(dateStr, timeStr) {
+      const p = String(dateStr).split('-');
+      const t = String(timeStr).split(':');
+      return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]), Number(t[0]), Number(t[1] || 0), 0).getTime();
+    }
+
+    function isTimeOverlap(startA, endA, startB, endB) {
+      return startA < endB && endA > startB;
+    }
+
+    function esc(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const styles = {
+        success: 'bg-emerald-600 text-white border-emerald-500',
+        error: 'bg-rose-600 text-white border-rose-500',
+        warning: 'bg-amber-500 text-white border-amber-400',
+        info: 'bg-slate-800 text-white border-slate-700'
+      };
+      const icons = {
+        success: 'check-circle-2',
+        error: 'alert-circle',
+        warning: 'alert-triangle',
+        info: 'info'
+      };
+      const el = document.createElement('div');
+      el.className = `pointer-events-auto flex items-start gap-2.5 px-4 py-3 rounded-2xl shadow-lg border text-xs sm:text-sm font-medium fade-in ${styles[type] || styles.info}`;
+      el.innerHTML = `
+        <i data-lucide="${icons[type] || 'info'}" class="w-4 h-4 shrink-0 mt-0.5"></i>
+        <span class="flex-1 leading-snug">${esc(message)}</span>
+      `;
+      container.appendChild(el);
+      lucide.createIcons();
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-6px)';
+        el.style.transition = 'all 0.2s ease';
+        setTimeout(() => el.remove(), 220);
+      }, 3600);
+    }
+
+    function openModal(html) {
+      const overlay = document.getElementById('modalOverlay');
+      const box = document.getElementById('modalBox');
+      box.innerHTML = html;
+      overlay.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.add('hidden');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modalOverlay') closeModal();
+    });
+
+    // ========================================================================
+    // 4. API COMMUNICATION (GAS WEB APP)
+    // ========================================================================
+    async function apiGet(params) {
+      const url = new URL(APP_CONFIG.GAS_WEB_APP_URL);
+      Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
+      const res = await fetch(url.toString(), { method: 'GET' });
+      return await res.json();
+    }
+
+    async function apiPost(payload) {
+      const res = await fetch(APP_CONFIG.GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }
+
+    // ========================================================================
+    // 5. INITIALIZATION & LINE LIFF AUTH
+    // ========================================================================
+    async function initApp() {
+      try {
+        document.getElementById('loadingSubtext').textContent = 'กำลังเชื่อมต่อ LINE LIFF...';
+        await liff.init({ liffId: APP_CONFIG.LIFF_ID });
+
+        if (!liff.isLoggedIn()) {
+          liff.login({ redirectUri: window.location.href });
+          return;
+        }
+
+        const profile = await liff.getProfile();
+        state.lineProfile = {
+          userId: profile.userId,
+          displayName: profile.displayName || '',
+          pictureUrl: profile.pictureUrl || ''
+        };
+
+        document.getElementById('loadingSubtext').textContent = 'กำลังตรวจสอบข้อมูลบุคลากร...';
+        const checkRes = await apiGet({ action: 'checkUser', userId: state.lineProfile.userId });
+
+        if (checkRes.status === 'success' && checkRes.isRegistered) {
+          await loadWorkspaceData();
+        } else {
+          showRegisterScreen();
+        }
+      } catch (err) {
+        console.error('LIFF/Init Error:', err);
+        document.getElementById('loadingScreen').innerHTML = `
+          <div class="max-w-sm bg-white p-6 rounded-3xl shadow-lg border border-slate-100 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-3">
+              <i data-lucide="wifi-off" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-slate-900">ไม่สามารถเชื่อมต่อระบบได้</h3>
+            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+              กรุณาเปิดลิงก์ผ่านแอปพลิเคชัน <b>LINE</b> ของโรงเรียนจะนะชนูปถัมภ์ หรือตรวจสอบการเชื่อมต่ออินเทอร์เน็ต
+            </p>
+            <p class="text-[11px] text-slate-400 mt-2 break-all">${esc(err.message || err)}</p>
+            <button onclick="location.reload()" class="mt-4 w-full py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold">
+              ลองใหม่อีกครั้ง
+            </button>
+          </div>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    function showRegisterScreen() {
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('mainShell').classList.add('hidden');
+      document.getElementById('mobileBottomNav').classList.add('hidden');
+      document.getElementById('registerScreen').classList.remove('hidden');
+
+      if (state.lineProfile.displayName) {
+        document.getElementById('regLineNameText').textContent = `LINE: ${state.lineProfile.displayName}`;
+      }
+      lucide.createIcons();
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('regSubmitBtn');
+      const fullName = document.getElementById('regFullName').value.trim();
+      const position = document.getElementById('regPosition').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const department = document.getElementById('regDepartment').value;
+
+      if (!fullName || !department) {
+        showToast('กรุณากรอกชื่อ-นามสกุล และเลือกกลุ่มสาระฯ/ฝ่ายงาน', 'warning');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> กำลังบันทึกข้อมูล...`;
+      lucide.createIcons();
+
+      try {
+        const res = await apiPost({
+          action: 'registerUser',
+          userId: state.lineProfile.userId,
+          fullName,
+          position,
+          phone,
+          department
+        });
+
+        if (res.status === 'success') {
+          showToast('ลงทะเบียนเรียบร้อย ยินดีต้อนรับครับ!', 'success');
+          document.getElementById('registerScreen').classList.add('hidden');
+          document.getElementById('loadingScreen').classList.remove('hidden');
+          document.getElementById('loadingSubtext').textContent = 'กำลังโหลดข้อมูลตารางการจอง...';
+          await loadWorkspaceData();
+        } else {
+          showToast(res.message || 'เกิดข้อผิดพลาดในการลงทะเบียน', 'error');
+        }
+      } catch (err) {
+        showToast('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> ยืนยันการลงทะเบียนและเข้าใช้งาน`;
+        lucide.createIcons();
+      }
+    });
+
+    async function loadWorkspaceData(showNotification = false) {
+      const data = await apiGet({
+        action: 'getBootstrapData',
+        userId: state.lineProfile.userId
+      });
+
+      if (data.status === 'unregistered') {
+        showRegisterScreen();
+        return;
+      }
+
+      if (data.status !== 'success') {
+        throw new Error(data.message || 'โหลดข้อมูลไม่สำเร็จ');
+      }
+
+      state.user = data.user;
+      state.rooms = data.rooms || [];
+      state.vehicles = data.vehicles || [];
+      state.drivers = data.drivers || [];
+      state.roomBookings = data.roomBookings || [];
+      state.vehicleBookings = data.vehicleBookings || [];
+      state.users = data.users || [];
+
+      if (!state.roomForm.roomId) {
+        const activeRoom = state.rooms.find(r => r.Status === 'Active');
+        if (activeRoom) state.roomForm.roomId = activeRoom.Room_ID;
+      }
+      if (!state.vehicleForm.vehicleId) {
+        const activeVeh = state.vehicles.find(v => v.Status === 'Active');
+        if (activeVeh) state.vehicleForm.vehicleId = activeVeh.Vehicle_ID;
+      }
+
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('registerScreen').classList.add('hidden');
+      document.getElementById('mainShell').classList.remove('hidden');
+      document.getElementById('mobileBottomNav').classList.remove('hidden');
+
+      updateUserProfileUI();
+      renderNavigation();
+      renderCurrentPage();
+
+      if (showNotification) {
+        showToast('อัปเดตข้อมูลล่าสุดเรียบร้อยแล้ว', 'success');
+      }
+    }
+
+    async function refreshData(notify = false) {
+      const icon = document.getElementById('refreshIcon');
+      if (icon) icon.classList.add('animate-spin');
+      try {
+        await loadWorkspaceData(notify);
+      } catch (e) {
+        showToast('รีเฟรชข้อมูลไม่สำเร็จ กรุณาลองใหม่', 'error');
+      } finally {
+        if (icon) icon.classList.remove('animate-spin');
+      }
+    }
+
+    function updateUserProfileUI() {
+      const u = state.user;
+      if (!u) return;
+      const roleLabels = {
+        Admin: 'ผู้ดูแลระบบ',
+        Approver: 'ผู้อนุมัติ',
+        Teacher: 'ครู/บุคลากร',
+        AV_Staff: 'จนท.โสตฯ',
+        Driver: 'พนักงานขับรถ'
+      };
+      document.getElementById('sidebarUserName').textContent = u.fullName;
+      document.getElementById('sidebarUserRole').textContent = roleLabels[u.role] || u.role;
+      document.getElementById('sidebarUserDept').textContent = u.department;
+      document.getElementById('mobileUserSub').textContent = `${u.fullName} • ${roleLabels[u.role] || u.role}`;
+
+      const avatarEl = document.getElementById('sidebarAvatar');
+      if (state.lineProfile.pictureUrl) {
+        avatarEl.innerHTML = `<img src="${esc(state.lineProfile.pictureUrl)}" alt="avatar" class="w-full h-full object-cover" />`;
+      } else {
+        avatarEl.textContent = u.fullName.charAt(0);
+      }
+    }
+
+    // ========================================================================
+    // 6. NAVIGATION MENU (ROLE-BASED)
+    // ========================================================================
+    function getMenuItems() {
+      const role = state.user ? state.user.role : 'Teacher';
+      const pendingRooms = state.roomBookings.filter(b => b.Status === 'Pending').length;
+      const pendingVehicles = state.vehicleBookings.filter(b => b.Status === 'Pending').length;
+      const totalPending = pendingRooms + pendingVehicles;
+
+      const items = [
+        { id: 'dashboard', label: 'ปฏิทิน/ภาพรวม', mobileLabel: 'ปฏิทิน', icon: 'calendar-days' },
+        { id: 'book-room', label: 'จองห้องประชุม', mobileLabel: 'จองห้อง', icon: 'building-2' },
+        { id: 'book-vehicle', label: 'จองรถราชการ', mobileLabel: 'จองรถ', icon: 'bus' },
+        { id: 'my-bookings', label: 'รายการของฉัน', mobileLabel: 'ของฉัน', icon: 'clipboard-list' }
+      ];
+
+      if (role === 'Approver' || role === 'Admin') {
+        items.push({
+          id: 'approvals',
+          label: 'อนุมัติคำขอ',
+          mobileLabel: 'อนุมัติ',
+          icon: 'check-square',
+          badge: totalPending > 0 ? totalPending : null
+        });
+      }
+
+      if (role === 'AV_Staff' || role === 'Driver' || role === 'Admin') {
+        items.push({
+          id: 'staff-queue',
+          label: 'คิวงานปฏิบัติการ',
+          mobileLabel: 'คิวงาน',
+          icon: 'wrench'
+        });
+      }
+
+      if (role === 'Admin') {
+        items.push({
+          id: 'admin',
+          label: 'ตั้งค่าระบบ/สิทธิ์',
+          mobileLabel: 'ตั้งค่า',
+          icon: 'settings'
+        });
+      }
+
+      return items;
+    }
+
+    function renderNavigation() {
+      const items = getMenuItems();
+      const sidebarNav = document.getElementById('sidebarNav');
+      sidebarNav.innerHTML = items.map(item => {
+        const active = state.activeTab === item.id;
+        return `
+          <button onclick="switchTab('${item.id}')"
+            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition ${
+              active
+                ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }">
+            <span class="flex items-center gap-3">
+              <i data-lucide="${item.icon}" class="w-4 h-4"></i>
+              <span>${item.label}</span>
+            </span>
+            ${item.badge ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${active ? 'bg-white text-indigo-700' : 'bg-amber-500 text-white'}">${item.badge}</span>` : ''}
+          </button>
+        `;
+      }).join('');
+
+      // Mobile Bottom Nav (แสดงสูงสุด 5 ปุ่มหลัก ถ้ามีมากกว่านั้นแสดงปุ่ม "เพิ่มเติม")
+      const mobileGrid = document.getElementById('mobileNavGrid');
+      const mobileItems = items.slice(0, 5);
+      mobileGrid.style.gridTemplateColumns = `repeat(${mobileItems.length}, minmax(0, 1fr))`;
+
+      mobileGrid.innerHTML = mobileItems.map(item => {
+        const active = state.activeTab === item.id;
+        return `
+          <button onclick="switchTab('${item.id}')"
+            class="relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition ${
+              active ? 'text-indigo-600 bg-indigo-50/80 font-semibold' : 'text-slate-500 hover:text-slate-800'
+            }">
+            <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+            <span class="text-[10px] mt-0.5 truncate max-w-full">${item.mobileLabel}</span>
+            ${item.badge ? `<span class="absolute top-1 right-2.5 w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] font-bold flex items-center justify-center">${item.badge}</span>` : ''}
+          </button>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      renderNavigation();
+      renderCurrentPage();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderCurrentPage() {
+      const titles = {
+        'dashboard': 'ปฏิทินและภาพรวมการใช้',
+        'book-room': 'จองห้องประชุม',
+        'book-vehicle': 'จองรถราชการ',
+        'my-bookings': 'รายการจองของฉัน',
+        'approvals': 'พิจารณาอนุมัติคำขอ',
+        'staff-queue': 'ตารางปฏิบัติงานเจ้าหน้าที่',
+        'admin': 'จัดการข้อมูลพื้นฐานและสิทธิ์'
+      };
+      document.getElementById('pageTitle').textContent = titles[state.activeTab] || 'ระบบจองโรงเรียน';
+
+      const container = document.getElementById('pageContent');
+      switch (state.activeTab) {
+        case 'dashboard':
+          container.innerHTML = renderDashboardPage();
+          break;
+        case 'book-room':
+          container.innerHTML = renderBookRoomPage();
+          break;
+        case 'book-vehicle':
+          container.innerHTML = renderBookVehiclePage();
+          break;
+        case 'my-bookings':
+          container.innerHTML = renderMyBookingsPage();
+          break;
+        case 'approvals':
+          container.innerHTML = renderApprovalsPage();
+          break;
+        case 'staff-queue':
+          container.innerHTML = renderStaffQueuePage();
+          break;
+        case 'admin':
+          container.innerHTML = renderAdminPage();
+          break;
+      }
+      lucide.createIcons();
+    }
+
+    // ========================================================================
+    // 7. PAGE 1: DASHBOARD & INTERACTIVE MONTHLY CALENDAR
+    // ========================================================================
+    function renderDashboardPage() {
+      const todayYmd = getTodayYMD();
+      const tmrYmd = getTomorrowYMD();
+      const activeRoomsCount = state.rooms.filter(r => r.Status === 'Active').length;
+      const activeVehiclesCount = state.vehicles.filter(v => v.Status === 'Active').length;
+      const pendingCount = state.roomBookings.filter(b => b.Status === 'Pending').length +
+                           state.vehicleBookings.filter(b => b.Status === 'Pending').length;
+      const myUpcomingCount =
+        state.roomBookings.filter(b => b.Requester_Line_ID === state.user.userId && b.Booking_Date >= todayYmd && b.Status !== 'Cancelled' && b.Status !== 'Rejected').length +
+        state.vehicleBookings.filter(b => b.Requester_Line_ID === state.user.userId && b.End_Date >= todayYmd && b.Status !== 'Cancelled' && b.Status !== 'Rejected').length;
+
+      const isPrivileged = state.user.role === 'Admin' || state.user.role === 'Approver';
+
+      // สำหรับโหมดรายการ (List View)
+      let filtered = [];
+      if (state.dashboardType === 'room') {
+        filtered = state.roomBookings.filter(b => {
+          if (b.Status === 'Cancelled' || b.Status === 'Rejected') return false;
+          if (state.dashboardDateFilter === 'today') return b.Booking_Date === todayYmd;
+          if (state.dashboardDateFilter === 'tomorrow') return b.Booking_Date === tmrYmd;
+          if (state.dashboardDateFilter === 'custom') return b.Booking_Date === state.dashboardCustomDate;
+          return b.Booking_Date >= todayYmd;
+        }).sort((a, b) => `${a.Booking_Date} ${a.Start_Time}`.localeCompare(`${b.Booking_Date} ${b.Start_Time}`));
+      } else {
+        filtered = state.vehicleBookings.filter(b => {
+          if (b.Status === 'Cancelled' || b.Status === 'Rejected') return false;
+          if (state.dashboardDateFilter === 'today') return b.Start_Date <= todayYmd && b.End_Date >= todayYmd;
+          if (state.dashboardDateFilter === 'tomorrow') return b.Start_Date <= tmrYmd && b.End_Date >= tmrYmd;
+          if (state.dashboardDateFilter === 'custom') return b.Start_Date <= state.dashboardCustomDate && b.End_Date >= state.dashboardCustomDate;
+          return b.End_Date >= todayYmd;
+        }).sort((a, b) => `${a.Start_Date} ${a.Start_Time}`.localeCompare(`${b.Start_Date} ${b.Start_Time}`));
+      }
+
+      return `
+        <div class="space-y-6 fade-in">
+          <!-- KPI Summary Cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div onclick="switchTab('book-room')" class="cursor-pointer bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:border-indigo-300 transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500">ห้องประชุมพร้อมใช้</span>
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <i data-lucide="building-2" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold text-slate-900 mt-2">${activeRoomsCount} <span class="text-xs font-normal text-slate-400">/ ${state.rooms.length} ห้อง</span></p>
+              <p class="text-[11px] text-indigo-600 font-medium mt-1">+ กดจองห้องประชุม</p>
+            </div>
+
+            <div onclick="switchTab('book-vehicle')" class="cursor-pointer bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:border-sky-300 transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500">รถราชการพร้อมใช้</span>
+                <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                  <i data-lucide="bus" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold text-slate-900 mt-2">${activeVehiclesCount} <span class="text-xs font-normal text-slate-400">/ ${state.vehicles.length} คัน</span></p>
+              <p class="text-[11px] text-sky-600 font-medium mt-1">+ กดจองรถราชการ</p>
+            </div>
+
+            <div onclick="switchTab('my-bookings')" class="cursor-pointer bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:border-emerald-300 transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500">รายการจองของฉัน</span>
+                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold text-slate-900 mt-2">${myUpcomingCount} <span class="text-xs font-normal text-slate-400">รายการ</span></p>
+              <p class="text-[11px] text-emerald-600 font-medium mt-1">ดูรายละเอียด / พิมพ์ใบขอ</p>
+            </div>
+
+            <div ${isPrivileged ? `onclick="switchTab('approvals')"` : ''} class="${isPrivileged ? 'cursor-pointer hover:border-amber-300' : ''} bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500">คำขอรออนุมัติ</span>
+                <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                  <i data-lucide="clock" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold text-slate-900 mt-2">${pendingCount} <span class="text-xs font-normal text-slate-400">รายการ</span></p>
+              <p class="text-[11px] text-amber-600 font-medium mt-1">${isPrivileged ? 'กดเพื่อพิจารณาอนุมัติ →' : 'อยู่ระหว่างรอพิจารณา'}</p>
+            </div>
+          </div>
+
+          <!-- Extra Quick Links for Mobile (ถ้ามีเมนูมากกว่า 5 รายการ) -->
+          ${state.user.role === 'Admin' ? `
+            <div class="md:hidden grid grid-cols-2 gap-2.5">
+              <button onclick="switchTab('staff-queue')" class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center gap-2.5 text-left shadow-sm">
+                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                  <i data-lucide="wrench" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-800">คิวงานเจ้าหน้าที่</p>
+                  <p class="text-[10px] text-slate-500">โสตฯ & พนักงานขับรถ</p>
+                </div>
+              </button>
+              <button onclick="switchTab('admin')" class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center gap-2.5 text-left shadow-sm">
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                  <i data-lucide="settings" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-800">ตั้งค่าระบบ</p>
+                  <p class="text-[10px] text-slate-500">จัดการห้อง/รถ/สิทธิ์</p>
+                </div>
+              </button>
+            </div>
+          ` : ''}
+
           <!-- Schedule Explorer Section -->
           <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -329,7 +882,7 @@
                 </button>
               </div>
 
-              <!-- View Mode Switcher (ปฏิทิน / รายการ) -->
+              <!-- View Mode Switcher -->
               <div class="inline-flex p-1 rounded-xl bg-slate-100 self-start sm:self-auto">
                 <button onclick="setDashboardViewMode('calendar')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${state.dashboardViewMode === 'calendar' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}">
                   <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> ปฏิทิน
@@ -413,11 +966,7 @@
       }">${label}</button>`;
     }
 
-    function setDashboardType(t) {
-      state.dashboardType = t;
-      state.calendarResourceFilter = 'ALL';
-      renderCurrentPage();
-    }
+    function setDashboardType(t) { state.dashboardType = t; state.calendarResourceFilter = 'ALL'; renderCurrentPage(); }
     function setDashboardViewMode(mode) { state.dashboardViewMode = mode; renderCurrentPage(); }
     function setDashboardDateFilter(f) { state.dashboardDateFilter = f; renderCurrentPage(); }
     function setDashboardCustomDate(d) { state.dashboardCustomDate = d; state.dashboardDateFilter = 'custom'; renderCurrentPage(); }
@@ -446,16 +995,12 @@
     function quickBookFromDate(type, ymd) {
       if (type === 'room') {
         state.roomForm.bookingDate = ymd;
-        if (state.calendarResourceFilter !== 'ALL') {
-          state.roomForm.roomId = state.calendarResourceFilter;
-        }
+        if (state.calendarResourceFilter !== 'ALL') state.roomForm.roomId = state.calendarResourceFilter;
         switchTab('book-room');
       } else {
         state.vehicleForm.startDate = ymd;
         state.vehicleForm.endDate = ymd;
-        if (state.calendarResourceFilter !== 'ALL') {
-          state.vehicleForm.vehicleId = state.calendarResourceFilter;
-        }
+        if (state.calendarResourceFilter !== 'ALL') state.vehicleForm.vehicleId = state.calendarResourceFilter;
         switchTab('book-vehicle');
       }
     }
@@ -489,7 +1034,6 @@
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const totalCells = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
 
-      // ตัวเลือกกรองเฉพาะห้องหรือรถ
       const resourceOptions = isRoom
         ? state.rooms.map(r => `<option value="${r.Room_ID}" ${state.calendarResourceFilter === r.Room_ID ? 'selected' : ''}>${esc(r.Room_Name)}</option>`).join('')
         : state.vehicles.map(v => `<option value="${v.Vehicle_ID}" ${state.calendarResourceFilter === v.Vehicle_ID ? 'selected' : ''}>${esc(v.Vehicle_Name)} (${esc(v.Plate_Number)})</option>`).join('');
@@ -512,7 +1056,6 @@
         const approvedCount = bookings.filter(b => b.Status === 'Approved').length;
         const pendingCount = bookings.filter(b => b.Status === 'Pending').length;
 
-        // แสดงผลแบบ Compact Dots บนมือถือ และ Pill ชื่อรายการบนจอใหญ่
         const desktopPills = bookings.slice(0, 2).map(b => {
           const pillStyle = b.Status === 'Pending'
             ? 'bg-amber-100 text-amber-800 border-amber-200'
@@ -569,9 +1112,7 @@
 
       return `
         <div class="p-4 sm:p-5 space-y-4">
-          <!-- Calendar Toolbar -->
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <!-- Month Switcher -->
             <div class="flex items-center justify-between sm:justify-start gap-2">
               <div class="flex items-center gap-1">
                 <button type="button" onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 active:scale-95 transition">
@@ -589,7 +1130,6 @@
               </button>
             </div>
 
-            <!-- Filter by specific room / vehicle -->
             <div class="flex items-center gap-2">
               <label class="text-xs font-medium text-slate-500 whitespace-nowrap">แสดงเฉพาะ:</label>
               <select onchange="setCalendarResourceFilter(this.value)"
@@ -600,27 +1140,23 @@
             </div>
           </div>
 
-          <!-- Status Legend -->
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-slate-600">
             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> ว่าง (ไม่มีจอง)</span>
             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full ${isRoom ? 'bg-indigo-500' : 'bg-sky-500'}"></span> อนุมัติแล้ว</span>
             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> รออนุมัติ</span>
-            <span class="text-slate-400 hidden sm:inline">• กดเลือกวันที่ในปฏิทินเพื่อดูคิวและกดจองทันที</span>
           </div>
 
-          <!-- 7-Column Calendar Grid -->
           <div class="rounded-2xl border border-slate-200 overflow-hidden">
             <div class="grid grid-cols-7 bg-slate-100/90 border-b border-slate-200">
               ${dayHeaders.map((h, idx) => `
                 <div class="py-2 text-center text-[11px] font-bold ${idx === 0 || idx === 6 ? 'text-rose-500' : 'text-slate-600'}">${h}</div>
               `).join('')}
             </div>
-            <div class="grid grid-cols-7 border-l border-t border-transparent">
+            <div class="grid grid-cols-7">
               ${cellsHtml}
             </div>
           </div>
 
-          <!-- Selected Date Detail Panel -->
           <div class="rounded-2xl bg-slate-50 border border-slate-200/80 p-4 space-y-3">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
@@ -662,4 +1198,1311 @@
     }
 
     function renderScheduleCard(type, b) {
-// ... existing code ... -->
+      const isRoom = type === 'room';
+      return `
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold ${isRoom ? 'bg-indigo-50 text-indigo-700' : 'bg-sky-50 text-sky-700'}">
+                ${isRoom ? esc(b.Room_Name) : `${esc(b.Vehicle_Name)} (${esc(b.Plate_Number)})`}
+              </span>
+              ${bookingStatusBadge(b.Status)}
+            </div>
+            <p class="font-semibold text-sm text-slate-900 truncate">
+              ${isRoom ? esc(b.Title) : `${esc(b.Purpose)} ณ ${esc(b.Destination)}`}
+            </p>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+              <span class="flex items-center gap-1">
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                ${isRoom
+                  ? `${formatThaiDateShort(b.Booking_Date)} • ${b.Start_Time} - ${b.End_Time} น.`
+                  : `${formatThaiDateShort(b.Start_Date)} ${b.Start_Time} - ${formatThaiDateShort(b.End_Date)} ${b.End_Time}`
+                }
+              </span>
+              <span class="flex items-center gap-1">
+                <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                ${esc(b.Requester_Name)} (${esc(b.Department)})
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function bookingStatusBadge(status) {
+      const map = {
+        Pending: '<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">รออนุมัติ</span>',
+        Approved: '<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">อนุมัติแล้ว</span>',
+        Rejected: '<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">ไม่อนุมัติ</span>',
+        Cancelled: '<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">ยกเลิกแล้ว</span>'
+      };
+      return map[status] || status;
+    }
+
+    function resourceStatusBadge(status) {
+      return status === 'Active'
+        ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 text-emerald-700 shrink-0">พร้อมใช้</span>'
+        : '<span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-rose-50 text-rose-700 shrink-0">งดใช้/ซ่อม</span>';
+    }
+
+    // ========================================================================
+    // 8. PAGE 2: BOOK ROOM (จองห้องประชุม + ตรวจเวลาว่างเรียลไทม์)
+    // ========================================================================
+    function getRoomConflict(roomId, dateStr, startTime, endTime) {
+      if (!roomId || !dateStr || !startTime || !endTime) return null;
+      const reqStart = toTimestamp(dateStr, startTime);
+      const reqEnd = toTimestamp(dateStr, endTime);
+      if (reqEnd <= reqStart) return { invalidTime: true };
+
+      return state.roomBookings.find(b => {
+        if (b.Room_ID !== roomId) return false;
+        if (b.Status === 'Rejected' || b.Status === 'Cancelled') return false;
+        if (b.Booking_Date !== dateStr) return false;
+        return isTimeOverlap(reqStart, reqEnd, toTimestamp(b.Booking_Date, b.Start_Time), toTimestamp(b.Booking_Date, b.End_Time));
+      }) || null;
+    }
+
+    function renderBookRoomPage() {
+      const f = state.roomForm;
+      const activeRooms = state.rooms.filter(r => r.Status === 'Active');
+      const conflict = getRoomConflict(f.roomId, f.bookingDate, f.startTime, f.endTime);
+
+      const equipOptions = [
+        'เครื่องเสียง / ไมโครโฟน',
+        'โปรเจกเตอร์ / จอ LED',
+        'ระบบประชุมออนไลน์ (Zoom/Meet)',
+        'คอมพิวเตอร์โน้ตบุ๊ก',
+        'น้ำดื่ม / อาหารว่าง',
+        'ป้ายเวที / ถ่ายภาพ'
+      ];
+
+      return `
+        <div class="max-w-3xl mx-auto space-y-5 fade-in">
+          <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 sm:p-7 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+              <div class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-200">
+                <i data-lucide="building-2" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base sm:text-lg text-slate-900">แบบฟอร์มขอใช้ห้องประชุม</h3>
+                <p class="text-xs text-slate-500">ตรวจสอบสถานะว่างอัตโนมัติและส่งแจ้งเตือนผู้อนุมัติทันที</p>
+              </div>
+            </div>
+
+            <!-- 1. เลือกห้องประชุม -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-2">1. เลือกห้องประชุม <span class="text-rose-500">*</span></label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                ${activeRooms.map(r => {
+                  const selected = f.roomId === r.Room_ID;
+                  const roomConflict = getRoomConflict(r.Room_ID, f.bookingDate, f.startTime, f.endTime);
+                  const isBusy = roomConflict && !roomConflict.invalidTime;
+                  return `
+                    <button type="button" onclick="updateRoomForm('roomId', '${r.Room_ID}')"
+                      class="text-left p-3.5 rounded-2xl border-2 transition ${
+                        selected
+                          ? 'border-indigo-600 bg-indigo-50/50 ring-2 ring-indigo-100'
+                          : 'border-slate-200 hover:border-slate-300 bg-white'
+                      }">
+                      <div class="flex items-start justify-between gap-2">
+                        <span class="font-bold text-sm text-slate-900">${esc(r.Room_Name)}</span>
+                        ${isBusy
+                          ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-700 shrink-0">ไม่ว่าง</span>'
+                          : '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0">ว่าง</span>'
+                        }
+                      </div>
+                      <p class="text-xs text-slate-500 mt-1">${esc(r.Building)} • จุ ${r.Capacity} คน</p>
+                      <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">${esc(r.Amenities)}</p>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- 2. วันและเวลา -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">2. วันที่ใช้ห้อง <span class="text-rose-500">*</span></label>
+                <input type="date" min="${getTodayYMD()}" value="${f.bookingDate}"
+                  onchange="updateRoomForm('bookingDate', this.value)"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">เวลาเริ่มต้น <span class="text-rose-500">*</span></label>
+                <input type="time" value="${f.startTime}"
+                  onchange="updateRoomForm('startTime', this.value)"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">เวลาสิ้นสุด <span class="text-rose-500">*</span></label>
+                <input type="time" value="${f.endTime}"
+                  onchange="updateRoomForm('endTime', this.value)"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm" />
+              </div>
+            </div>
+
+            <!-- แจ้งเตือนสถานะเวลา -->
+            ${conflict ? (conflict.invalidTime ? `
+              <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i>
+                <span>เวลาสิ้นสุดต้องมากกว่าเวลาเริ่มต้น กรุณาตรวจสอบเวลาอีกครั้ง</span>
+              </div>
+            ` : `
+              <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
+                <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                <div>
+                  <p class="font-bold">ห้องประชุมไม่ว่างในช่วงเวลานี้!</p>
+                  <p class="mt-0.5">ถูกจองแล้วโดย <b>${esc(conflict.Requester_Name)}</b> เรื่อง "${esc(conflict.Title)}" เวลา ${conflict.Start_Time} - ${conflict.End_Time} น.</p>
+                </div>
+              </div>
+            `) : `
+              <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 text-emerald-600"></i>
+                <span>ห้องประชุมว่างพร้อมให้บริการในช่วงเวลาที่เลือก</span>
+              </div>
+            `}
+
+            <!-- 3. รายละเอียดกิจกรรม -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">3. หัวข้อการประชุม / กิจกรรม <span class="text-rose-500">*</span></label>
+                <input type="text" value="${esc(f.title)}" oninput="state.roomForm.title = this.value"
+                  placeholder="เช่น ประชุมคณะกรรมการบริหารหลักสูตรสถานศึกษา"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">จำนวนผู้เข้าร่วม (คน)</label>
+                  <input type="number" min="1" value="${f.attendees}" oninput="state.roomForm.attendees = this.value"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">รูปแบบการจัดโต๊ะ</label>
+                  <select onchange="state.roomForm.seatingStyle = this.value"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm bg-white">
+                    ${['ปกติ', 'รูปตัวยู (U-Shape)', 'ห้องเรียน (Classroom)', 'เธียเตอร์ (Theater)', 'โต๊ะประชุมกลุ่ม'].map(s =>
+                      `<option value="${s}" ${f.seatingStyle === s ? 'selected' : ''}>${s}</option>`
+                    ).join('')}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-2">อุปกรณ์ / สิ่งอำนวยความสะดวกที่ต้องการ (แจ้งฝ่ายโสตฯ)</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  ${equipOptions.map(eq => {
+                    const checked = f.equipment.includes(eq);
+                    return `
+                      <label class="flex items-center gap-2.5 p-2.5 rounded-xl border ${checked ? 'border-indigo-300 bg-indigo-50/40' : 'border-slate-200'} cursor-pointer text-xs">
+                        <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleRoomEquipment('${eq}')"
+                          class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500" />
+                        <span class="font-medium text-slate-700">${eq}</span>
+                      </label>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">หมายเหตุเพิ่มเติม (ถ้ามี)</label>
+                <textarea rows="2" oninput="state.roomForm.note = this.value"
+                  placeholder="ระบุรายละเอียดเพิ่มเติมสำหรับเจ้าหน้าที่อาคารสถานที่หรือฝ่ายโสตฯ"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-sm">${esc(f.note)}</textarea>
+              </div>
+            </div>
+
+            <button type="button" onclick="submitRoomBooking()" ${conflict || state.isSubmitting ? 'disabled' : ''}
+              class="w-full py-3.5 rounded-2xl ${conflict ? 'bg-slate-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] shadow-md shadow-indigo-200'} text-white font-bold text-sm transition flex items-center justify-center gap-2">
+              <i data-lucide="${state.isSubmitting ? 'loader-2' : 'send'}" class="w-4 h-4 ${state.isSubmitting ? 'animate-spin' : ''}"></i>
+              ${state.isSubmitting ? 'กำลังส่งคำขอจอง...' : 'ยืนยันส่งคำขอจองห้องประชุม'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateRoomForm(key, val) {
+      state.roomForm[key] = val;
+      renderCurrentPage();
+    }
+
+    function toggleRoomEquipment(eq) {
+      const idx = state.roomForm.equipment.indexOf(eq);
+      if (idx >= 0) state.roomForm.equipment.splice(idx, 1);
+      else state.roomForm.equipment.push(eq);
+      renderCurrentPage();
+    }
+
+    async function submitRoomBooking() {
+      const f = state.roomForm;
+      if (!f.roomId || !f.bookingDate || !f.title.trim()) {
+        showToast('กรุณาเลือกห้องประชุม วันที่ และกรอกหัวข้อการประชุมให้ครบถ้วน', 'warning');
+        return;
+      }
+      if (getRoomConflict(f.roomId, f.bookingDate, f.startTime, f.endTime)) {
+        showToast('ห้องประชุมไม่ว่างในช่วงเวลาที่เลือก', 'error');
+        return;
+      }
+
+      state.isSubmitting = true;
+      renderCurrentPage();
+      try {
+        const res = await apiPost({
+          action: 'createRoomBooking',
+          userId: state.user.userId,
+          roomId: f.roomId,
+          bookingDate: f.bookingDate,
+          startTime: f.startTime,
+          endTime: f.endTime,
+          title: f.title.trim(),
+          attendees: Number(f.attendees || 0),
+          seatingStyle: f.seatingStyle,
+          equipment: f.equipment,
+          note: f.note.trim()
+        });
+
+        if (res.status === 'success') {
+          showToast(`ส่งคำขอจองเรียบร้อย (${res.bookingId})`, 'success');
+          state.roomForm.title = '';
+          state.roomForm.note = '';
+          await loadWorkspaceData(false);
+          switchTab('my-bookings');
+        } else {
+          showToast(res.message || 'ไม่สามารถบันทึกการจองได้', 'error');
+        }
+      } catch (e) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      } finally {
+        state.isSubmitting = false;
+        renderCurrentPage();
+      }
+    }
+
+    // ========================================================================
+    // 9. PAGE 3: BOOK VEHICLE (จองรถราชการ + ตรวจคิวรถและคนขับ)
+    // ========================================================================
+    function getVehicleConflict(vehicleId, startDate, startTime, endDate, endTime) {
+      if (!vehicleId || !startDate || !endDate) return null;
+      const reqStart = toTimestamp(startDate, startTime);
+      const reqEnd = toTimestamp(endDate, endTime);
+      if (reqEnd <= reqStart) return { invalidTime: true };
+
+      return state.vehicleBookings.find(b => {
+        if (b.Vehicle_ID !== vehicleId) return false;
+        if (b.Status === 'Rejected' || b.Status === 'Cancelled') return false;
+        return isTimeOverlap(reqStart, reqEnd, toTimestamp(b.Start_Date, b.Start_Time), toTimestamp(b.End_Date, b.End_Time));
+      }) || null;
+    }
+
+    function getDriverConflict(driverId, startDate, startTime, endDate, endTime) {
+      if (!driverId || driverId === 'AUTO') return null;
+      const reqStart = toTimestamp(startDate, startTime);
+      const reqEnd = toTimestamp(endDate, endTime);
+      if (reqEnd <= reqStart) return null;
+
+      return state.vehicleBookings.find(b => {
+        if (b.Driver_ID !== driverId) return false;
+        if (b.Status === 'Rejected' || b.Status === 'Cancelled') return false;
+        return isTimeOverlap(reqStart, reqEnd, toTimestamp(b.Start_Date, b.Start_Time), toTimestamp(b.End_Date, b.End_Time));
+      }) || null;
+    }
+
+    function renderBookVehiclePage() {
+      const f = state.vehicleForm;
+      const activeVehicles = state.vehicles.filter(v => v.Status === 'Active');
+      const activeDrivers = state.drivers.filter(d => d.Status === 'Active');
+      const conflict = getVehicleConflict(f.vehicleId, f.startDate, f.startTime, f.endDate, f.endTime);
+      const driverConflict = getDriverConflict(f.driverId, f.startDate, f.startTime, f.endDate, f.endTime);
+
+      const selectedVeh = activeVehicles.find(v => v.Vehicle_ID === f.vehicleId);
+      const totalPassengers = Number(f.teacherCount || 0) + Number(f.studentCount || 0);
+      const overCapacity = selectedVeh && totalPassengers > Number(selectedVeh.Seats || 99);
+
+      return `
+        <div class="max-w-3xl mx-auto space-y-5 fade-in">
+          <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 sm:p-7 space-y-6">
+            <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+              <div class="w-11 h-11 rounded-2xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-200">
+                <i data-lucide="bus" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base sm:text-lg text-slate-900">แบบฟอร์มขออนุญาตใช้รถราชการ</h3>
+                <p class="text-xs text-slate-500">ตรวจสอบคิวรถและพนักงานขับรถอัตโนมัติ พร้อมพิมพ์บันทึกข้อความได้ทันที</p>
+              </div>
+            </div>
+
+            <!-- 1. เลือกรถราชการ -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-2">1. เลือกรถราชการ <span class="text-rose-500">*</span></label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                ${activeVehicles.map(v => {
+                  const selected = f.vehicleId === v.Vehicle_ID;
+                  const vConflict = getVehicleConflict(v.Vehicle_ID, f.startDate, f.startTime, f.endDate, f.endTime);
+                  const isBusy = vConflict && !vConflict.invalidTime;
+                  return `
+                    <button type="button" onclick="updateVehicleForm('vehicleId', '${v.Vehicle_ID}')"
+                      class="text-left p-3.5 rounded-2xl border-2 transition ${
+                        selected
+                          ? 'border-sky-600 bg-sky-50/50 ring-2 ring-sky-100'
+                          : 'border-slate-200 hover:border-slate-300 bg-white'
+                      }">
+                      <div class="flex items-start justify-between gap-2">
+                        <span class="font-bold text-sm text-slate-900">${esc(v.Vehicle_Name)}</span>
+                        ${isBusy
+                          ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-700 shrink-0">ติดภารกิจ</span>'
+                          : '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700 shrink-0">ว่าง</span>'
+                        }
+                      </div>
+                      <p class="text-xs font-semibold text-sky-700 mt-1">${esc(v.Plate_Number)}</p>
+                      <p class="text-[11px] text-slate-500 mt-0.5">${esc(v.Vehicle_Type)} • รองรับ ${v.Seats} ที่นั่ง</p>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- 2. วันและเวลาไป-กลับ -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">วันที่ออกเดินทาง <span class="text-rose-500">*</span></label>
+                <input type="date" min="${getTodayYMD()}" value="${f.startDate}"
+                  onchange="updateVehicleStartDate(this.value)"
+                  class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">เวลาไป <span class="text-rose-500">*</span></label>
+                <input type="time" value="${f.startTime}"
+                  onchange="updateVehicleForm('startTime', this.value)"
+                  class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">วันที่เดินทางกลับ <span class="text-rose-500">*</span></label>
+                <input type="date" min="${f.startDate}" value="${f.endDate}"
+                  onchange="updateVehicleForm('endDate', this.value)"
+                  class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">เวลากลับ <span class="text-rose-500">*</span></label>
+                <input type="time" value="${f.endTime}"
+                  onchange="updateVehicleForm('endTime', this.value)"
+                  class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+              </div>
+            </div>
+
+            <!-- แจ้งเตือนสถานะรถ -->
+            ${conflict ? (conflict.invalidTime ? `
+              <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i>
+                <span>วัน-เวลากลับต้องมากกว่าวัน-เวลาออกเดินทาง</span>
+              </div>
+            ` : `
+              <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
+                <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                <div>
+                  <p class="font-bold">รถคันนี้ไม่ว่างในช่วงเวลาที่เลือก!</p>
+                  <p class="mt-0.5">ติดภารกิจของ <b>${esc(conflict.Requester_Name)}</b> (${formatThaiDateShort(conflict.Start_Date)} ${conflict.Start_Time} - ${formatThaiDateShort(conflict.End_Date)} ${conflict.End_Time})</p>
+                </div>
+              </div>
+            `) : `
+              <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 text-emerald-600"></i>
+                <span>รถราชการว่างพร้อมให้บริการในช่วงเวลาที่เลือก</span>
+              </div>
+            `}
+
+            <!-- 3. รายละเอียดภารกิจและสถานที่ -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">3. ไปราชการเรื่อง / ภารกิจ <span class="text-rose-500">*</span></label>
+                <input type="text" value="${esc(f.purpose)}" oninput="state.vehicleForm.purpose = this.value"
+                  placeholder="เช่น นำนักเรียนเข้าร่วมการแข่งขันทักษะวิชาการศิลปหัตถกรรม"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">สถานที่ปลายทาง <span class="text-rose-500">*</span></label>
+                  <input type="text" value="${esc(f.destination)}" oninput="state.vehicleForm.destination = this.value"
+                    placeholder="เช่น มหาวิทยาลัยสงขลานครินทร์ วิทยาเขตหาดใหญ่"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">จังหวัด</label>
+                  <input type="text" value="${esc(f.province)}" oninput="state.vehicleForm.province = this.value"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">จำนวนครู/บุคลากร (คน)</label>
+                  <input type="number" min="0" value="${f.teacherCount}" oninput="updateVehicleForm('teacherCount', this.value)"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">จำนวนนักเรียน (คน)</label>
+                  <input type="number" min="0" value="${f.studentCount}" oninput="updateVehicleForm('studentCount', this.value)"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">เลขที่หนังสืออ้างอิง (ถ้ามี)</label>
+                  <input type="text" value="${esc(f.docRef)}" oninput="state.vehicleForm.docRef = this.value"
+                    placeholder="เช่น ศธ 04258.xxx/..."
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm" />
+                </div>
+              </div>
+
+              ${overCapacity ? `
+                <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
+                  <span>จำนวนผู้โดยสารรวม (${totalPassengers} คน) เกินจำนวนที่นั่งของรถ (${selectedVeh.Seats} ที่นั่ง)</span>
+                </div>
+              ` : ''}
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">พนักงานขับรถ</label>
+                <select onchange="updateVehicleForm('driverId', this.value)"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm bg-white">
+                  <option value="AUTO" ${f.driverId === 'AUTO' ? 'selected' : ''}>ให้หัวหน้างานยานพาหนะจัดให้ (แนะนำ)</option>
+                  ${activeDrivers.map(d => {
+                    const busy = getDriverConflict(d.Driver_ID, f.startDate, f.startTime, f.endDate, f.endTime);
+                    return `<option value="${d.Driver_ID}" ${f.driverId === d.Driver_ID ? 'selected' : ''}>${esc(d.Driver_Name)} (${esc(d.Phone)}) ${busy ? '— [ติดคิวงาน]' : ''}</option>`;
+                  }).join('')}
+                </select>
+                ${driverConflict ? `<p class="text-xs text-rose-600 mt-1">พนักงานขับรถท่านนี้ติดภารกิจในช่วงเวลาดังกล่าว</p>` : ''}
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">หมายเหตุเพิ่มเติม (จุดรับ-ส่ง / สัมภาระ)</label>
+                <textarea rows="2" oninput="state.vehicleForm.note = this.value"
+                  placeholder="เช่น จุดขึ้นรถหน้าอาคารอำนวยการ เวลา 07.45 น."
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm">${esc(f.note)}</textarea>
+              </div>
+            </div>
+
+            <button type="button" onclick="submitVehicleBooking()" ${conflict || driverConflict || state.isSubmitting ? 'disabled' : ''}
+              class="w-full py-3.5 rounded-2xl ${conflict || driverConflict ? 'bg-slate-300 cursor-not-allowed' : 'bg-sky-600 hover:bg-sky-700 active:scale-[0.99] shadow-md shadow-sky-200'} text-white font-bold text-sm transition flex items-center justify-center gap-2">
+              <i data-lucide="${state.isSubmitting ? 'loader-2' : 'send'}" class="w-4 h-4 ${state.isSubmitting ? 'animate-spin' : ''}"></i>
+              ${state.isSubmitting ? 'กำลังส่งคำขอจองรถ...' : 'ยืนยันส่งคำขอจองรถราชการ'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateVehicleForm(key, val) {
+      state.vehicleForm[key] = val;
+      renderCurrentPage();
+    }
+
+    function updateVehicleStartDate(val) {
+      state.vehicleForm.startDate = val;
+      if (state.vehicleForm.endDate < val) state.vehicleForm.endDate = val;
+      renderCurrentPage();
+    }
+
+    async function submitVehicleBooking() {
+      const f = state.vehicleForm;
+      if (!f.vehicleId || !f.startDate || !f.purpose.trim() || !f.destination.trim()) {
+        showToast('กรุณากรอกข้อมูลภารกิจ สถานที่ปลายทาง และเลือกรถให้ครบถ้วน', 'warning');
+        return;
+      }
+      if (getVehicleConflict(f.vehicleId, f.startDate, f.startTime, f.endDate, f.endTime)) {
+        showToast('รถราชการไม่ว่างในช่วงเวลาที่เลือก', 'error');
+        return;
+      }
+
+      state.isSubmitting = true;
+      renderCurrentPage();
+      try {
+        const res = await apiPost({
+          action: 'createVehicleBooking',
+          userId: state.user.userId,
+          vehicleId: f.vehicleId,
+          startDate: f.startDate,
+          startTime: f.startTime,
+          endDate: f.endDate,
+          endTime: f.endTime,
+          purpose: f.purpose.trim(),
+          destination: f.destination.trim(),
+          province: f.province.trim(),
+          docRef: f.docRef.trim(),
+          teacherCount: Number(f.teacherCount || 0),
+          studentCount: Number(f.studentCount || 0),
+          driverId: f.driverId,
+          note: f.note.trim()
+        });
+
+        if (res.status === 'success') {
+          showToast(`ส่งคำขอจองรถเรียบร้อย (${res.bookingId})`, 'success');
+          state.vehicleForm.purpose = '';
+          state.vehicleForm.destination = '';
+          state.vehicleForm.note = '';
+          await loadWorkspaceData(false);
+          switchTab('my-bookings');
+        } else {
+          showToast(res.message || 'ไม่สามารถบันทึกการจองได้', 'error');
+        }
+      } catch (e) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      } finally {
+        state.isSubmitting = false;
+        renderCurrentPage();
+      }
+    }
+
+    // ========================================================================
+    // 10. PAGE 4: MY BOOKINGS + OFFICIAL A4 PRINT GENERATOR
+    // ========================================================================
+    function renderMyBookingsPage() {
+      const todayYmd = getTodayYMD();
+      const uid = state.user.userId;
+
+      const myRooms = state.roomBookings.filter(b => b.Requester_Line_ID === uid).map(b => ({ ...b, _type: 'room', _sortDate: b.Booking_Date }));
+      const myVehicles = state.vehicleBookings.filter(b => b.Requester_Line_ID === uid).map(b => ({ ...b, _type: 'vehicle', _sortDate: b.End_Date }));
+      let all = [...myRooms, ...myVehicles];
+
+      if (state.myBookingTypeFilter !== 'ALL') {
+        all = all.filter(b => b._type === state.myBookingTypeFilter);
+      }
+
+      if (state.myBookingTab === 'upcoming') {
+        all = all.filter(b => b._sortDate >= todayYmd && b.Status !== 'Cancelled' && b.Status !== 'Rejected');
+      }
+
+      return `
+        <div class="space-y-4 fade-in">
+          <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-3">
+            <div class="inline-flex p-1 rounded-xl bg-slate-100">
+              <button onclick="state.myBookingTab='upcoming'; renderCurrentPage();"
+                class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${state.myBookingTab === 'upcoming' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600'}">
+                กำลังจะมาถึง
+              </button>
+              <button onclick="state.myBookingTab='history'; renderCurrentPage();"
+                class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${state.myBookingTab === 'history' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600'}">
+                ประวัติทั้งหมด
+              </button>
+            </div>
+
+            <select onchange="state.myBookingTypeFilter=this.value; renderCurrentPage();"
+              class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 bg-white outline-none">
+              <option value="ALL" ${state.myBookingTypeFilter === 'ALL' ? 'selected' : ''}>ทุกประเภท</option>
+              <option value="room" ${state.myBookingTypeFilter === 'room' ? 'selected' : ''}>เฉพาะห้องประชุม</option>
+              <option value="vehicle" ${state.myBookingTypeFilter === 'vehicle' ? 'selected' : ''}>เฉพาะรถราชการ</option>
+            </select>
+          </div>
+
+          ${all.length === 0 ? `
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-10 text-center">
+              <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="inbox" class="w-6 h-6"></i>
+              </div>
+              <p class="text-sm font-semibold text-slate-700">ยังไม่มีรายการจองในหมวดนี้</p>
+              <p class="text-xs text-slate-400 mt-1">กดเมนู "จองห้องประชุม" หรือ "จองรถราชการ" เพื่อเริ่มสร้างรายการ</p>
+            </div>
+          ` : `
+            <div class="space-y-3">
+              ${all.map(b => {
+                const isRoom = b._type === 'room';
+                const canCancel = (b.Status === 'Pending' || b.Status === 'Approved') && b._sortDate >= todayYmd;
+                return `
+                  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 space-y-3">
+                    <div class="flex flex-wrap items-start justify-between gap-2">
+                      <div class="space-y-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold ${isRoom ? 'bg-indigo-50 text-indigo-700' : 'bg-sky-50 text-sky-700'}">
+                            ${isRoom ? '🏢 ' + esc(b.Room_Name) : '🚐 ' + esc(b.Vehicle_Name) + ' (' + esc(b.Plate_Number) + ')'}
+                          </span>
+                          ${bookingStatusBadge(b.Status)}
+                          <span class="text-[11px] text-slate-400">#${esc(b.Booking_ID)}</span>
+                        </div>
+                        <h4 class="font-bold text-sm sm:text-base text-slate-900">
+                          ${isRoom ? esc(b.Title) : `${esc(b.Purpose)} ณ ${esc(b.Destination)}`}
+                        </h4>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 bg-slate-50 p-3 rounded-xl">
+                      <div>
+                        <span class="text-slate-400">วัน-เวลา:</span>
+                        <span class="font-semibold text-slate-800">
+                          ${isRoom
+                            ? `${formatThaiDateShort(b.Booking_Date)} เวลา ${b.Start_Time} - ${b.End_Time} น.`
+                            : `${formatThaiDateShort(b.Start_Date)} ${b.Start_Time} - ${formatThaiDateShort(b.End_Date)} ${b.End_Time}`
+                          }
+                        </span>
+                      </div>
+                      <div>
+                        <span class="text-slate-400">${isRoom ? 'จำนวน/จัดโต๊ะ:' : 'พนักงานขับรถ:'}</span>
+                        <span class="font-semibold text-slate-800">
+                          ${isRoom ? `${b.Attendees} คน (${esc(b.Seating_Style)})` : esc(b.Driver_Name || '-')}
+                        </span>
+                      </div>
+                      ${b.Approver_Name ? `
+                        <div class="sm:col-span-2">
+                          <span class="text-slate-400">ผู้พิจารณา:</span>
+                          <span class="font-medium text-slate-700">${esc(b.Approver_Name)}</span>
+                          ${b.Reject_Reason ? `<span class="text-rose-600 font-semibold"> — เหตุผล: ${esc(b.Reject_Reason)}</span>` : ''}
+                        </div>
+                      ` : ''}
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-end gap-2 pt-1">
+                      <button onclick="printBookingForm('${b._type}', '${b.Booking_ID}')"
+                        class="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition">
+                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                        พิมพ์บันทึกข้อความ (A4)
+                      </button>
+
+                      ${canCancel ? `
+                        <button onclick="confirmCancelBooking('${b._type}', '${b.Booking_ID}')"
+                          class="px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center gap-1.5 transition">
+                          <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                          ยกเลิกรายการ
+                        </button>
+                      ` : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function confirmCancelBooking(bookingType, bookingId) {
+      openModal(`
+        <div class="p-6 space-y-4">
+          <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
+            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-slate-900">ยืนยันการยกเลิกรายการจอง?</h3>
+            <p class="text-xs text-slate-500 mt-1">รายการเลขที่ <b>${esc(bookingId)}</b> จะถูกยกเลิกและคืนช่วงเวลาให้บุคลากรท่านอื่นจองได้ทันที</p>
+          </div>
+          <div class="flex gap-2 pt-2">
+            <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600">ปิดหน้าต่าง</button>
+            <button onclick="executeCancelBooking('${bookingType}', '${bookingId}')" class="flex-1 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-semibold">ยืนยันยกเลิก</button>
+          </div>
+        </div>
+      `);
+    }
+
+    async function executeCancelBooking(bookingType, bookingId) {
+      closeModal();
+      showToast('กำลังยกเลิกรายการ...', 'info');
+      try {
+        const res = await apiPost({
+          action: 'cancelBooking',
+          userId: state.user.userId,
+          bookingType,
+          bookingId
+        });
+        if (res.status === 'success') {
+          showToast(res.message, 'success');
+          await loadWorkspaceData(false);
+        } else {
+          showToast(res.message || 'ยกเลิกไม่สำเร็จ', 'error');
+        }
+      } catch (e) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      }
+    }
+
+    function printBookingForm(type, bookingId) {
+      const isRoom = type === 'room';
+      const b = isRoom
+        ? state.roomBookings.find(x => x.Booking_ID === bookingId)
+        : state.vehicleBookings.find(x => x.Booking_ID === bookingId);
+      if (!b) return;
+
+      const printArea = document.getElementById('printArea');
+      if (isRoom) {
+        let equipList = '-';
+        try {
+          const parsed = JSON.parse(b.Equipment_JSON || '[]');
+          if (Array.isArray(parsed) && parsed.length > 0) equipList = parsed.join(', ');
+        } catch (e) {}
+
+        printArea.innerHTML = `
+          <div style="padding: 10px;">
+            <div style="text-align: center; font-weight: bold; font-size: 22px; margin-bottom: 12px;">บันทึกข้อความ</div>
+            <p><b>ส่วนราชการ</b> โรงเรียนจะนะชนูปถัมภ์ กลุ่มสาระการเรียนรู้/ฝ่ายงาน ${esc(b.Department)}</p>
+            <p><b>ที่</b> ${esc(b.Booking_ID)} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>วันที่</b> ${formatThaiDateFull(b.Booking_Date)}</p>
+            <p style="border-bottom: 1px solid #000; padding-bottom: 8px;"><b>เรื่อง</b> ขออนุญาตใช้ห้องประชุม (${esc(b.Room_Name)})</p>
+            <p style="margin-top: 14px;"><b>เรียน</b> ผู้อำนวยการโรงเรียนจะนะชนูปถัมภ์</p>
+            <p style="text-indent: 2.5cm; margin-top: 8px;">
+              ด้วยข้าพเจ้า <b>${esc(b.Requester_Name)}</b> กลุ่มสาระการเรียนรู้/ฝ่ายงาน <b>${esc(b.Department)}</b> หมายเลขโทรศัพท์ ${esc(b.Phone)}
+              มีความประสงค์ขออนุญาตใช้ <b>${esc(b.Room_Name)}</b> เพื่อจัดกิจกรรม/ประชุมเรื่อง <b>"${esc(b.Title)}"</b>
+              ในวันที่ <b>${formatThaiDateFull(b.Booking_Date)}</b> ตั้งแต่เวลา <b>${b.Start_Time} น.</b> ถึงเวลา <b>${b.End_Time} น.</b>
+              มีผู้เข้าร่วมจำนวน <b>${b.Attendees} คน</b> รูปแบบการจัดโต๊ะ <b>${esc(b.Seating_Style)}</b>
+            </p>
+            <p style="text-indent: 2.5cm; margin-top: 6px;">
+              อุปกรณ์โสตทัศนศึกษาที่ต้องการ: ${esc(equipList)} ${b.Note ? `(หมายเหตุ: ${esc(b.Note)})` : ''}
+            </p>
+            <p style="text-indent: 2.5cm; margin-top: 8px;">จึงเรียนมาเพื่อโปรดพิจารณาอนุญาต</p>
+
+            <div style="margin-top: 36px; display: flex; justify-content: flex-end;">
+              <div style="text-align: center; width: 260px;">
+                <p>ลงชื่อ ...................................................... ผู้ขออนุญาต</p>
+                <p>( ${esc(b.Requester_Name)} )</p>
+                <p>ฝ่ายงาน ${esc(b.Department)}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 40px; border: 1px solid #000; padding: 14px;">
+              <p><b>ความเห็นของผู้อำนวยการโรงเรียน / ผู้ได้รับมอบหมาย</b></p>
+              <p style="margin-top: 8px;">
+                [ ${b.Status === 'Approved' ? '✓' : ' '} ] อนุญาต &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                [ ${b.Status === 'Rejected' ? '✓' : ' '} ] ไม่อนุญาต ${b.Reject_Reason ? `(${esc(b.Reject_Reason)})` : ''}
+              </p>
+              <div style="margin-top: 28px; text-align: center;">
+                <p>ลงชื่อ ...................................................... ผู้อนุมัติ</p>
+                <p>( ${b.Approver_Name ? esc(b.Approver_Name) : '......................................................'} )</p>
+                <p>ผู้อำนวยการโรงเรียนจะนะชนูปถัมภ์</p>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        printArea.innerHTML = `
+          <div style="padding: 10px;">
+            <div style="text-align: center; font-weight: bold; font-size: 22px; margin-bottom: 12px;">บันทึกข้อความ</div>
+            <p><b>ส่วนราชการ</b> โรงเรียนจะนะชนูปถัมภ์ กลุ่มสาระการเรียนรู้/ฝ่ายงาน ${esc(b.Department)}</p>
+            <p><b>ที่</b> ${esc(b.Doc_Ref || b.Booking_ID)} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>วันที่</b> ${formatThaiDateFull(b.Start_Date)}</p>
+            <p style="border-bottom: 1px solid #000; padding-bottom: 8px;"><b>เรื่อง</b> ขออนุญาตใช้รถราชการ (${esc(b.Vehicle_Name)} หมายเลขทะเบียน ${esc(b.Plate_Number)})</p>
+            <p style="margin-top: 14px;"><b>เรียน</b> ผู้อำนวยการโรงเรียนจะนะชนูปถัมภ์</p>
+            <p style="text-indent: 2.5cm; margin-top: 8px;">
+              ด้วยข้าพเจ้า <b>${esc(b.Requester_Name)}</b> กลุ่มสาระการเรียนรู้/ฝ่ายงาน <b>${esc(b.Department)}</b> หมายเลขโทรศัพท์ ${esc(b.Phone)}
+              มีความประสงค์ขออนุญาตใช้รถราชการ <b>${esc(b.Vehicle_Name)}</b> หมายเลขทะเบียน <b>${esc(b.Plate_Number)}</b>
+              เพื่อไปราชการเรื่อง <b>"${esc(b.Purpose)}"</b> ณ <b>${esc(b.Destination)}</b> จังหวัด <b>${esc(b.Province)}</b>
+              มีผู้ร่วมเดินทางประกอบด้วย ครู/บุคลากรจำนวน <b>${b.Teacher_Count} คน</b> และนักเรียนจำนวน <b>${b.Student_Count} คน</b>
+            </p>
+            <p style="text-indent: 2.5cm; margin-top: 6px;">
+              กำหนดออกเดินทางในวันที่ <b>${formatThaiDateFull(b.Start_Date)}</b> เวลา <b>${b.Start_Time} น.</b>
+              และเดินทางกลับในวันที่ <b>${formatThaiDateFull(b.End_Date)}</b> เวลา <b>${b.End_Time} น.</b>
+              โดยมี <b>${esc(b.Driver_Name)}</b> เป็นพนักงานขับรถ ${b.Note ? `(หมายเหตุ: ${esc(b.Note)})` : ''}
+            </p>
+            <p style="text-indent: 2.5cm; margin-top: 8px;">จึงเรียนมาเพื่อโปรดพิจารณาอนุญาต</p>
+
+            <div style="margin-top: 36px; display: flex; justify-content: flex-end;">
+              <div style="text-align: center; width: 260px;">
+                <p>ลงชื่อ ...................................................... ผู้ขออนุญาต</p>
+                <p>( ${esc(b.Requester_Name)} )</p>
+                <p>ฝ่ายงาน ${esc(b.Department)}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 40px; border: 1px solid #000; padding: 14px;">
+              <p><b>คำสั่งผู้อำนวยการโรงเรียน / ผู้ได้รับมอบหมาย</b></p>
+              <p style="margin-top: 8px;">
+                [ ${b.Status === 'Approved' ? '✓' : ' '} ] อนุญาต &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                [ ${b.Status === 'Rejected' ? '✓' : ' '} ] ไม่อนุญาต ${b.Reject_Reason ? `(${esc(b.Reject_Reason)})` : ''}
+              </p>
+              <div style="margin-top: 28px; text-align: center;">
+                <p>ลงชื่อ ...................................................... ผู้อนุมัติ</p>
+                <p>( ${b.Approver_Name ? esc(b.Approver_Name) : '......................................................'} )</p>
+                <p>ผู้อำนวยการโรงเรียนจะนะชนูปถัมภ์</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      window.print();
+    }
+
+    // ========================================================================
+    // 11. PAGE 5: APPROVALS WORKBENCH (สำหรับผู้อนุมัติ / ผู้ดูแลระบบ)
+    // ========================================================================
+    function renderApprovalsPage() {
+      const allRooms = state.roomBookings.map(b => ({ ...b, _type: 'room' }));
+      const allVehicles = state.vehicleBookings.map(b => ({ ...b, _type: 'vehicle' }));
+      const combined = [...allRooms, ...allVehicles];
+
+      const list = state.approvalTab === 'pending'
+        ? combined.filter(b => b.Status === 'Pending')
+        : combined.filter(b => b.Status === 'Approved' || b.Status === 'Rejected');
+
+      const activeDrivers = state.drivers.filter(d => d.Status === 'Active');
+
+      return `
+        <div class="space-y-4 fade-in">
+          <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div class="inline-flex p-1 rounded-xl bg-slate-100">
+              <button onclick="state.approvalTab='pending'; renderCurrentPage();"
+                class="px-4 py-1.5 rounded-lg text-xs font-semibold transition ${state.approvalTab === 'pending' ? 'bg-white text-amber-700 shadow-sm' : 'text-slate-600'}">
+                รออนุมัติ (${combined.filter(b => b.Status === 'Pending').length})
+              </button>
+              <button onclick="state.approvalTab='history'; renderCurrentPage();"
+                class="px-4 py-1.5 rounded-lg text-xs font-semibold transition ${state.approvalTab === 'history' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}">
+                พิจารณาแล้ว
+              </button>
+            </div>
+          </div>
+
+          ${list.length === 0 ? `
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-10 text-center">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+              </div>
+              <p class="text-sm font-semibold text-slate-700">ไม่มีรายการค้างพิจารณา</p>
+            </div>
+          ` : `
+            <div class="space-y-3">
+              ${list.map(b => {
+                const isRoom = b._type === 'room';
+                return `
+                  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold ${isRoom ? 'bg-indigo-50 text-indigo-700' : 'bg-sky-50 text-sky-700'}">
+                          ${isRoom ? '🏢 ' + esc(b.Room_Name) : '🚐 ' + esc(b.Vehicle_Name)}
+                        </span>
+                        ${bookingStatusBadge(b.Status)}
+                        <span class="text-[11px] text-slate-400">#${esc(b.Booking_ID)}</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 class="font-bold text-sm sm:text-base text-slate-900">
+                        ${isRoom ? esc(b.Title) : `${esc(b.Purpose)} ณ ${esc(b.Destination)}`}
+                      </h4>
+                      <p class="text-xs text-slate-600 mt-1">
+                        ผู้ขอใช้: <b>${esc(b.Requester_Name)}</b> (${esc(b.Department)}) • โทร ${esc(b.Phone)}
+                      </p>
+                      <p class="text-xs text-slate-600 mt-0.5">
+                        วัน-เวลา: <b>${isRoom
+                          ? `${formatThaiDateShort(b.Booking_Date)} (${b.Start_Time} - ${b.End_Time} น.)`
+                          : `${formatThaiDateShort(b.Start_Date)} ${b.Start_Time} - ${formatThaiDateShort(b.End_Date)} ${b.End_Time}`
+                        }</b>
+                      </p>
+                    </div>
+
+                    ${!isRoom && b.Status === 'Pending' ? `
+                      <div class="bg-slate-50 p-3 rounded-xl">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">มอบหมายพนักงานขับรถ:</label>
+                        <select id="driverAssign_${b.Booking_ID}" class="w-full sm:w-auto px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white">
+                          <option value="${esc(b.Driver_ID)}">${esc(b.Driver_Name)} (ตามคำขอ)</option>
+                          ${activeDrivers.map(d => `<option value="${d.Driver_ID}">${esc(d.Driver_Name)}</option>`).join('')}
+                        </select>
+                      </div>
+                    ` : ''}
+
+                    ${b.Status === 'Pending' ? `
+                      <div class="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                        <button onclick="openRejectModal('${b._type}', '${b.Booking_ID}')"
+                          class="px-4 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">
+                          ไม่อนุมัติ
+                        </button>
+                        <button onclick="processApproval('${b._type}', '${b.Booking_ID}', 'Approved')"
+                          class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition">
+                          ✓ อนุมัติคำขอ
+                        </button>
+                      </div>
+                    ` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function openRejectModal(bookingType, bookingId) {
+      openModal(`
+        <div class="p-6 space-y-4">
+          <h3 class="font-bold text-base text-slate-900">ระบุเหตุผลที่ไม่อนุมัติ</h3>
+          <textarea id="rejectReasonInput" rows="3" placeholder="เช่น มีภารกิจเร่งด่วนของโรงเรียนในช่วงเวลาดังกล่าว"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-rose-500 outline-none text-sm"></textarea>
+          <div class="flex gap-2">
+            <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600">ยกเลิก</button>
+            <button onclick="submitReject('${bookingType}', '${bookingId}')" class="flex-1 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold">ยืนยันไม่อนุมัติ</button>
+          </div>
+        </div>
+      `);
+    }
+
+    function submitReject(bookingType, bookingId) {
+      const reason = document.getElementById('rejectReasonInput').value.trim();
+      closeModal();
+      processApproval(bookingType, bookingId, 'Rejected', reason);
+    }
+
+    async function processApproval(bookingType, bookingId, newStatus, rejectReason = '') {
+      let driverId = '';
+      if (bookingType === 'vehicle' && newStatus === 'Approved') {
+        const sel = document.getElementById(`driverAssign_${bookingId}`);
+        if (sel) driverId = sel.value;
+      }
+
+      showToast('กำลังบันทึกผลการพิจารณาและแจ้งเตือน LINE...', 'info');
+      try {
+        const res = await apiPost({
+          action: 'updateBookingStatus',
+          userId: state.user.userId,
+          bookingType,
+          bookingId,
+          newStatus,
+          rejectReason,
+          driverId
+        });
+
+        if (res.status === 'success') {
+          showToast(res.message, 'success');
+          await loadWorkspaceData(false);
+        } else {
+          showToast(res.message || 'ดำเนินการไม่สำเร็จ', 'error');
+        }
+      } catch (e) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      }
+    }
+
+    // ========================================================================
+    // 12. PAGE 6: STAFF OPERATIONS QUEUE (คิวงานฝ่ายโสตฯ & พนักงานขับรถ)
+    // ========================================================================
+    function renderStaffQueuePage() {
+      const todayYmd = getTodayYMD();
+      const upcomingRooms = state.roomBookings.filter(b => b.Status === 'Approved' && b.Booking_Date >= todayYmd)
+        .sort((a, b) => `${a.Booking_Date} ${a.Start_Time}`.localeCompare(`${b.Booking_Date} ${b.Start_Time}`));
+      const upcomingVehicles = state.vehicleBookings.filter(b => b.Status === 'Approved' && b.End_Date >= todayYmd)
+        .sort((a, b) => `${a.Start_Date} ${a.Start_Time}`.localeCompare(`${b.Start_Date} ${b.Start_Time}`));
+
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 fade-in">
+          <!-- คิวจัดเตรียมห้องประชุม (ฝ่ายโสตฯ / อาคารสถานที่) -->
+          <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+              <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <i data-lucide="mic-2" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-slate-900">คิวเตรียมห้องประชุม (อนุมัติแล้ว)</h3>
+                <p class="text-[11px] text-slate-500">สำหรับฝ่ายโสตทัศนศึกษาและอาคารสถานที่</p>
+              </div>
+            </div>
+
+            ${upcomingRooms.length === 0 ? `<p class="text-xs text-slate-400 text-center py-6">ไม่มีคิวงานห้องประชุม</p>` : `
+              <div class="space-y-3">
+                ${upcomingRooms.map(r => {
+                  let eq = '-';
+                  try { eq = JSON.parse(r.Equipment_JSON || '[]').join(', ') || '-'; } catch (e) {}
+                  return `
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-1.5 text-xs">
+                      <div class="flex justify-between font-bold text-indigo-700">
+                        <span>${esc(r.Room_Name)}</span>
+                        <span>${formatThaiDateShort(r.Booking_Date)} (${r.Start_Time}-${r.End_Time})</span>
+                      </div>
+                      <p class="font-semibold text-slate-900">${esc(r.Title)}</p>
+                      <p class="text-slate-600">จัดโต๊ะ: <b>${esc(r.Seating_Style)}</b> (${r.Attendees} คน)</p>
+                      <p class="text-slate-600">อุปกรณ์: ${esc(eq)}</p>
+                      <p class="text-slate-500">ผู้ประสานงาน: ${esc(r.Requester_Name)} (${esc(r.Phone)})</p>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `}
+          </div>
+
+          <!-- คิวเดินรถราชการ (พนักงานขับรถ) -->
+          <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+              <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                <i data-lucide="navigation" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-slate-900">คิวเดินรถราชการ (อนุมัติแล้ว)</h3>
+                <p class="text-[11px] text-slate-500">สำหรับพนักงานขับรถและงานยานพาหนะ</p>
+              </div>
+            </div>
+
+            ${upcomingVehicles.length === 0 ? `<p class="text-xs text-slate-400 text-center py-6">ไม่มีคิวเดินรถราชการ</p>` : `
+              <div class="space-y-3">
+                ${upcomingVehicles.map(v => `
+                  <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-1.5 text-xs">
+                    <div class="flex justify-between font-bold text-sky-700">
+                      <span>${esc(v.Vehicle_Name)} (${esc(v.Plate_Number)})</span>
+                      <span>คนขับ: ${esc(v.Driver_Name)}</span>
+                    </div>
+                    <p class="font-semibold text-slate-900">${esc(v.Destination)} (${esc(v.Province)})</p>
+                    <p class="text-slate-600">ไป-กลับ: <b>${formatThaiDateShort(v.Start_Date)} ${v.Start_Time} - ${formatThaiDateShort(v.End_Date)} ${v.End_Time}</b></p>
+                    <p class="text-slate-500">ผู้ขอใช้: ${esc(v.Requester_Name)} (${esc(v.Phone)})</p>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    // ========================================================================
+    // 13. PAGE 7: ADMIN SETTINGS (จัดการห้อง, รถ, คนขับ, และสิทธิ์บุคลากร)
+    // ========================================================================
+    function renderAdminPage() {
+      return `
+        <div class="space-y-5 fade-in">
+          <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap gap-1.5">
+            ${[
+              { id: 'rooms', label: 'จัดการห้องประชุม' },
+              { id: 'vehicles', label: 'จัดการรถราชการ' },
+              { id: 'drivers', label: 'พนักงานขับรถ' },
+              { id: 'users', label: 'สิทธิ์บุคลากร (' + state.users.length + ')' }
+            ].map(t => `
+              <button onclick="state.adminTab='${t.id}'; renderCurrentPage();"
+                class="px-3.5 py-2 rounded-xl text-xs font-bold transition ${state.adminTab === t.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                ${t.label}
+              </button>
+            `).join('')}
+          </div>
+
+          ${state.adminTab === 'rooms' ? renderAdminRooms() : ''}
+          ${state.adminTab === 'vehicles' ? renderAdminVehicles() : ''}
+          ${state.adminTab === 'drivers' ? renderAdminDrivers() : ''}
+          ${state.adminTab === 'users' ? renderAdminUsers() : ''}
+        </div>
+      `;
+    }
+
+    function renderAdminRooms() {
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-slate-900">รายการห้องประชุมทั้งหมด</h3>
+            <button onclick="openResourceModal('room')" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">+ เพิ่มห้องประชุม</button>
+          </div>
+          <div class="space-y-2.5">
+            ${state.rooms.map(r => `
+              <div class="p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm text-slate-900">${esc(r.Room_Name)}</span>
+                    ${resourceStatusBadge(r.Status)}
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">${esc(r.Building)} • จุ ${r.Capacity} คน</p>
+                </div>
+                <button onclick='openResourceModal("room", ${JSON.stringify(r)})' class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50">แก้ไข</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAdminVehicles() {
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-slate-900">รายการรถราชการทั้งหมด</h3>
+            <button onclick="openResourceModal('vehicle')" class="px-3.5 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold">+ เพิ่มรถราชการ</button>
+          </div>
+          <div class="space-y-2.5">
+            ${state.vehicles.map(v => `
+              <div class="p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm text-slate-900">${esc(v.Vehicle_Name)}</span>
+                    ${resourceStatusBadge(v.Status)}
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">ทะเบียน ${esc(v.Plate_Number)} • ${v.Seats} ที่นั่ง</p>
+                </div>
+                <button onclick='openResourceModal("vehicle", ${JSON.stringify(v)})' class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50">แก้ไข</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAdminDrivers() {
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-slate-900">รายชื่อพนักงานขับรถ</h3>
+            <button onclick="openResourceModal('driver')" class="px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold">+ เพิ่มพนักงานขับรถ</button>
+          </div>
+          <div class="space-y-2.5">
+            ${state.drivers.map(d => `
+              <div class="p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm text-slate-900">${esc(d.Driver_Name)}</span>
+                    ${resourceStatusBadge(d.Status)}
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">โทร: ${esc(d.Phone)}</p>
+                </div>
+                <button onclick='openResourceModal("driver", ${JSON.stringify(d)})' class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50">แก้ไข</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function openResourceModal(type, item = {}) {
+      if (type === 'room') {
+        openModal(`
+          <div class="p-6 space-y-4">
+            <h3 class="font-bold text-base text-slate-900">${item.Room_ID ? 'แก้ไขข้อมูลห้องประชุม' : 'เพิ่มห้องประชุมใหม่'}</h3>
+            <input type="hidden" id="resId" value="${esc(item.Room_ID || '')}" />
+            <input type="text" id="resName" value="${esc(item.Room_Name || '')}" placeholder="ชื่อห้องประชุม" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="text" id="resBuilding" value="${esc(item.Building || '')}" placeholder="อาคาร / ชั้น" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="number" id="resCapacity" value="${esc(item.Capacity || 40)}" placeholder="ความจุ (คน)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="text" id="resAmenities" value="${esc(item.Amenities || '')}" placeholder="อุปกรณ์ภายในห้อง" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <select id="resStatus" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Active" ${item.Status !== 'Maintenance' ? 'selected' : ''}>พร้อมใช้งาน (Active)</option>
+              <option value="Maintenance" ${item.Status === 'Maintenance' ? 'selected' : ''}>งดใช้งาน / ปรับปรุง</option>
+            </select>
+            <div class="flex gap-2 pt-2">
+              <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold">ยกเลิก</button>
+              <button onclick="saveResourceSubmit('room')" class="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold">บันทึกข้อมูล</button>
+            </div>
+          </div>
+        `);
+      } else if (type === 'vehicle') {
+        openModal(`
+          <div class="p-6 space-y-4">
+            <h3 class="font-bold text-base text-slate-900">${item.Vehicle_ID ? 'แก้ไขข้อมูลรถราชการ' : 'เพิ่มรถราชการใหม่'}</h3>
+            <input type="hidden" id="resId" value="${esc(item.Vehicle_ID || '')}" />
+            <input type="text" id="resName" value="${esc(item.Vehicle_Name || '')}" placeholder="ยี่ห้อ / รุ่นรถ" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="text" id="resPlate" value="${esc(item.Plate_Number || '')}" placeholder="หมายเลขทะเบียน" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="text" id="resVType" value="${esc(item.Vehicle_Type || 'รถตู้')}" placeholder="ประเภทรถ (รถตู้ / รถบัส / รถกระบะ)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="number" id="resSeats" value="${esc(item.Seats || 12)}" placeholder="จำนวนที่นั่ง" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <select id="resStatus" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Active" ${item.Status !== 'Maintenance' ? 'selected' : ''}>พร้อมใช้งาน (Active)</option>
+              <option value="Maintenance" ${item.Status === 'Maintenance' ? 'selected' : ''}>งดใช้งาน / ซ่อมบำรุง</option>
+            </select>
+            <div class="flex gap-2 pt-2">
+              <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold">ยกเลิก</button>
+              <button onclick="saveResourceSubmit('vehicle')" class="flex-1 py-2.5 rounded-xl bg-sky-600 text-white text-xs font-bold">บันทึกข้อมูล</button>
+            </div>
+          </div>
+        `);
+      } else if (type === 'driver') {
+        openModal(`
+          <div class="p-6 space-y-4">
+            <h3 class="font-bold text-base text-slate-900">${item.Driver_ID ? 'แก้ไขพนักงานขับรถ' : 'เพิ่มพนักงานขับรถ'}</h3>
+            <input type="hidden" id="resId" value="${esc(item.Driver_ID || '')}" />
+            <input type="text" id="resName" value="${esc(item.Driver_Name || '')}" placeholder="ชื่อ-นามสกุล พนักงานขับรถ" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="text" id="resPhone" value="${esc(item.Phone || '')}" placeholder="เบอร์โทรศัพท์" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="text" id="resLineId" value="${esc(item.Line_User_ID || '')}" placeholder="LINE User ID (พิมพ์คำว่า เช็กไอดี ในแชทบอท)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <select id="resStatus" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Active" ${item.Status !== 'Inactive' ? 'selected' : ''}>ปฏิบัติงาน (Active)</option>
+              <option value="Inactive" ${item.Status === 'Inactive' ? 'selected' : ''}>พักปฏิบัติงาน</option>
+            </select>
+            <div class="flex gap-2 pt-2">
+              <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold">ยกเลิก</button>
+              <button onclick="saveResourceSubmit('driver')" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold">บันทึกข้อมูล</button>
+            </div>
+          </div>
+        `);
+      }
+    }
+
+    async function saveResourceSubmit(resourceType) {
+      let data = {};
+      if (resourceType === 'room') {
+        data = {
+          Room_ID: document.getElementById('resId').value,
+          Room_Name: document.getElementById('resName').value.trim(),
+          Building: document.getElementById('resBuilding').value.trim(),
+          Capacity: document.getElementById('resCapacity').value,
+          Amenities: document.getElementById('resAmenities').value.trim(),
+          Status: document.getElementById('resStatus').value
+        };
+      } else if (resourceType === 'vehicle') {
+        data = {
+          Vehicle_ID: document.getElementById('resId').value,
+          Vehicle_Name: document.getElementById('resName').value.trim(),
+          Plate_Number: document.getElementById('resPlate').value.trim(),
+          Vehicle_Type: document.getElementById('resVType').value.trim(),
+          Seats: document.getElementById('resSeats').value,
+          Status: document.getElementById('resStatus').value
+        };
+      } else if (resourceType === 'driver') {
+        data = {
+          Driver_ID: document.getElementById('resId').value,
+          Driver_Name: document.getElementById('resName').value.trim(),
+          Phone: document.getElementById('resPhone').value.trim(),
+          Line_User_ID: document.getElementById('resLineId').value.trim(),
+          Status: document.getElementById('resStatus').value
+        };
+      }
+
+      closeModal();
+      showToast('กำลังบันทึกข้อมูล...', 'info');
+      try {
+        const res = await apiPost({
+          action: 'saveResource',
+          userId: state.user.userId,
+          resourceType,
+          data
+        });
+        if (res.status === 'success') {
+          showToast(res.message, 'success');
+          await loadWorkspaceData(false);
+        } else {
+          showToast(res.message || 'บันทึกไม่สำเร็จ', 'error');
+        }
+      } catch (e) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      }
+    }
+
+    function renderAdminUsers() {
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 space-y-4">
+          <div>
+            <h3 class="font-bold text-sm text-slate-900">กำหนดสิทธิ์การใช้งานบุคลากร</h3>
+            <p class="text-xs text-slate-500 mt-0.5">เลือกกำหนดตำแหน่งผู้อนุมัติ (รองฯ/ผอ.), เจ้าหน้าที่โสตฯ, หรือผู้ดูแลระบบ</p>
+          </div>
+          <div class="space-y-2.5">
+            ${state.users.map(u => `
+              <div class="p-3.5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <p class="font-bold text-sm text-slate-900">${esc(u.fullName)}</p>
+                  <p class="text-xs text-slate-500">${esc(u.position)} • ${esc(u.department)} (${esc(u.phone)})</p>
+                </div>
+                <select onchange="changeUserRole('${u.userId}', this.value)"
+                  class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                  <option value="Teacher" ${u.role === 'Teacher' ? 'selected' : ''}>ครู/บุคลากร (Teacher)</option>
+                  <option value="Approver" ${u.role === 'Approver' ? 'selected' : ''}>ผู้อนุมัติ (Approver)</option>
+                  <option value="AV_Staff" ${u.role === 'AV_Staff' ? 'selected' : ''}>จนท.โสตฯ (AV_Staff)</option>
+                  <option value="Driver" ${u.role === 'Driver' ? 'selected' : ''}>พนักงานขับรถ (Driver)</option>
+                  <option value="Admin" ${u.role === 'Admin' ? 'selected' : ''}>ผู้ดูแลระบบ (Admin)</option>
+                </select>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    async function changeUserRole(targetUserId, newRole) {
+      showToast('กำลังอัปเดตสิทธิ์...', 'info');
+      try {
+        const res = await apiPost({
+          action: 'updateUserRole',
+          userId: state.user.userId,
+          targetUserId,
+          newRole
+        });
+        if (res.status === 'success') {
+          showToast(res.message, 'success');
+          await loadWorkspaceData(false);
+        } else {
+          showToast(res.message || 'อัปเดตไม่สำเร็จ', 'error');
+        }
+      } catch (e) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      }
+    }
+
+    // Boot application
+    initApp();
+  </script>
+</body>
+</html>

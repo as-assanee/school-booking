@@ -356,7 +356,8 @@
         docRef: '',
         teacherCount: 2,
         studentCount: 10,
-        driverId: 'AUTO',
+        driverId: '',
+        selfDriverName: '',
         note: ''
       },
       isSubmitting: false,
@@ -428,6 +429,13 @@
       } catch (e) {
         return String(val).trim() ? [String(val).trim()] : [];
       }
+    }
+
+    function extractSelfDriverName(driverName) {
+      const m = String(driverName || '').match(/^ขับรถไปเอง\s*\((.+)\)$/);
+      if (!m) return '';
+      const name = m[1].trim();
+      return (name === 'รอลงชื่อผู้ขับ' || name === 'ไม่ได้ระบุชื่อ') ? '' : name;
     }
 
     function encodePrintPayload(obj) {
@@ -676,6 +684,10 @@
         const activeVeh = state.vehicles.find(v => v.Status === 'Active');
         if (activeVeh) state.vehicleForm.vehicleId = activeVeh.Vehicle_ID;
       }
+      if (!state.vehicleForm.driverId || state.vehicleForm.driverId === 'AUTO') {
+        const activeDrv = state.drivers.find(d => d.Status === 'Active');
+        state.vehicleForm.driverId = activeDrv ? activeDrv.Driver_ID : 'SELF';
+      }
 
       document.getElementById('loadingScreen').classList.add('hidden');
       document.getElementById('registerScreen').classList.add('hidden');
@@ -743,6 +755,7 @@
       const roleLabels = {
         Admin: 'ผู้ดูแลระบบ',
         Approver: 'ผู้อนุมัติ',
+        Vehicle_Approver: 'หัวหน้ายานพาหนะ',
         Teacher: 'ครู/บุคลากร',
         AV_Staff: 'จนท.โสตฯ',
         Driver: 'พนักงานขับรถ'
@@ -770,6 +783,7 @@
             <option value="Admin" ${!state.previewRole ? 'selected' : ''}>👁️ Admin</option>
             <option value="Teacher" ${state.previewRole === 'Teacher' ? 'selected' : ''}>👁️ มุมมองครู</option>
             <option value="Approver" ${state.previewRole === 'Approver' ? 'selected' : ''}>👁️ ผู้อนุมัติ</option>
+            <option value="Vehicle_Approver" ${state.previewRole === 'Vehicle_Approver' ? 'selected' : ''}>👁️ หัวหน้ายานพาหนะ</option>
             <option value="AV_Staff" ${state.previewRole === 'AV_Staff' ? 'selected' : ''}>👁️ จนท.โสตฯ</option>
             <option value="Driver" ${state.previewRole === 'Driver' ? 'selected' : ''}>👁️ คนขับรถ</option>
           </select>
@@ -806,6 +820,7 @@
         Admin: 'ผู้ดูแลระบบ (ปกติ)',
         Teacher: 'ครู/บุคลากร (จำลอง)',
         Approver: 'ผู้อนุมัติ (จำลอง)',
+        Vehicle_Approver: 'หัวหน้างานยานพาหนะ (จำลอง)',
         AV_Staff: 'จนท.โสตฯ (จำลอง)',
         Driver: 'พนักงานขับรถ (จำลอง)'
       };
@@ -816,8 +831,10 @@
     // 6. NAVIGATION & ROUTING
     // ========================================================================
     function getPendingCount() {
-      const r = state.roomBookings.filter(b => b.Status === 'Pending').length;
+      const role = state.user ? state.user.role : 'Teacher';
       const v = state.vehicleBookings.filter(b => b.Status === 'Pending').length;
+      if (role === 'Vehicle_Approver') return v;
+      const r = state.roomBookings.filter(b => b.Status === 'Pending').length;
       return r + v;
     }
 
@@ -832,7 +849,7 @@
         { id: 'my-bookings', label: 'รายการจองของฉัน', shortLabel: 'ของฉัน', icon: 'clipboard-list', mobile: true }
       ];
 
-      if (role === 'Approver' || role === 'Admin') {
+      if (role === 'Approver' || role === 'Admin' || role === 'Vehicle_Approver') {
         items.push({
           id: 'approvals',
           label: 'พิจารณาอนุมัติ',
@@ -843,7 +860,7 @@
         });
       }
 
-      if (role === 'AV_Staff' || role === 'Driver' || role === 'Admin') {
+      if (role === 'AV_Staff' || role === 'Driver' || role === 'Admin' || role === 'Vehicle_Approver') {
         items.push({
           id: 'staff-queue',
           label: 'คิวงานเจ้าหน้าที่',
@@ -954,8 +971,8 @@
         state.vehicleBookings.filter(b => b.Requester_Line_ID === state.user.userId && b.End_Date >= todayYmd && b.Status !== 'Cancelled' && b.Status !== 'Rejected').length;
       const pendingCount = getPendingCount();
 
-      const isApprover = role === 'Admin' || role === 'Approver';
-      const isStaffOrAdmin = role === 'Admin' || role === 'AV_Staff' || role === 'Driver';
+      const isApprover = role === 'Admin' || role === 'Approver' || role === 'Vehicle_Approver';
+      const isStaffOrAdmin = role === 'Admin' || role === 'AV_Staff' || role === 'Driver' || role === 'Vehicle_Approver';
 
       return `
         <div class="space-y-5 fade-in">
@@ -1719,7 +1736,7 @@
     }
 
     function getDriverConflict(driverId, startDate, startTime, endDate, endTime) {
-      if (!driverId || driverId === 'AUTO') return null;
+      if (!driverId || driverId === 'AUTO' || driverId === 'SELF') return null;
       const reqStart = toTimestamp(startDate, startTime);
       const reqEnd = toTimestamp(endDate, endTime);
       if (reqEnd <= reqStart) return null;
@@ -1729,6 +1746,16 @@
         if (b.Status === 'Rejected' || b.Status === 'Cancelled') return false;
         return isTimeOverlap(reqStart, reqEnd, toTimestamp(b.Start_Date, b.Start_Time), toTimestamp(b.End_Date, b.End_Time));
       }) || null;
+    }
+
+    function setVehicleDriverMode(mode) {
+      if (mode === 'SELF') {
+        state.vehicleForm.driverId = 'SELF';
+      } else {
+        const activeDrv = state.drivers.find(d => d.Status === 'Active');
+        state.vehicleForm.driverId = activeDrv ? activeDrv.Driver_ID : 'SELF';
+      }
+      renderCurrentPage();
     }
 
     function updateVehicleForm(key, val) {
@@ -1762,8 +1789,70 @@
                 <i data-lucide="bus" class="w-5 h-5"></i>
               </div>
               <div>
-                <h3 class="font-bold text-base sm:text-lg text-slate-900">แบบฟอร์มขอใช้รถราชการ</h3>
-                <p class="text-xs text-slate-500">ตรวจสอบคิวรถและพนักงานขับรถแบบเรียลไทม์ก่อนส่งคำขอ</p>
+                <label class="block text-xs font-bold text-slate-700 mb-2">พนักงานขับรถ <span class="text-rose-500">*</span></label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button type="button" onclick="setVehicleDriverMode('DRIVER')" ${activeDrivers.length === 0 ? 'disabled' : ''}
+                    class="text-left p-3 rounded-2xl border-2 transition flex items-start gap-2.5 ${
+                      f.driverId !== 'SELF'
+                        ? 'border-sky-600 bg-sky-50/60 ring-2 ring-sky-100'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                    } ${activeDrivers.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${f.driverId !== 'SELF' ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500'}">
+                      <i data-lucide="user-check" class="w-4 h-4"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-bold ${f.driverId !== 'SELF' ? 'text-sky-900' : 'text-slate-800'}">พนักงานขับรถโรงเรียน</p>
+                      <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                        ${activeDrivers.length === 1
+                          ? `${esc(activeDrivers[0].Driver_Name)} (${esc(activeDrivers[0].Phone || '-')})`
+                          : activeDrivers.length > 1
+                            ? `เลือกจากพนักงานขับรถ (${activeDrivers.length} คน)`
+                            : 'ยังไม่มีรายชื่อคนขับรถในระบบ'
+                        }
+                      </p>
+                    </div>
+                  </button>
+
+                  <button type="button" onclick="setVehicleDriverMode('SELF')"
+                    class="text-left p-3 rounded-2xl border-2 transition flex items-start gap-2.5 ${
+                      f.driverId === 'SELF'
+                        ? 'border-sky-600 bg-sky-50/60 ring-2 ring-sky-100'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                    }">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${f.driverId === 'SELF' ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500'}">
+                      <i data-lucide="steering-wheel" class="w-4 h-4"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-bold ${f.driverId === 'SELF' ? 'text-sky-900' : 'text-slate-800'}">ขับรถไปเอง (ครู/บุคลากร)</p>
+                      <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">สำหรับครู/บุคลากรที่มีคำสั่งแต่งตั้งให้ขับรถได้</p>
+                    </div>
+                  </button>
+                </div>
+
+                ${f.driverId !== 'SELF' && activeDrivers.length > 1 ? `
+                  <select onchange="updateVehicleForm('driverId', this.value)"
+                    class="mt-2.5 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-sky-500 outline-none text-sm bg-white">
+                    ${activeDrivers.map(d => {
+                      const busy = getDriverConflict(d.Driver_ID, f.startDate, f.startTime, f.endDate, f.endTime);
+                      return `<option value="${d.Driver_ID}" ${f.driverId === d.Driver_ID ? 'selected' : ''}>${esc(d.Driver_Name)} (${esc(d.Phone)}) ${busy ? '— [ติดคิวงาน]' : ''}</option>`;
+                    }).join('')}
+                  </select>
+                ` : ''}
+
+                ${f.driverId === 'SELF' ? `
+                  <div class="mt-2.5">
+                    <input type="text" value="${esc(f.selfDriverName || '')}" oninput="state.vehicleForm.selfDriverName = this.value"
+                      placeholder="ระบุชื่อครู/บุคลากรผู้ขับรถ (หรือเว้นว่างไว้ลงชื่อในใบบันทึกข้อความ A4)"
+                      class="w-full px-3.5 py-2.5 rounded-xl border border-sky-200 bg-sky-50/30 focus:border-sky-500 outline-none text-sm" />
+                  </div>
+                ` : ''}
+
+                ${driverConflict ? `
+                  <div class="mt-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+                    <span>พนักงานขับรถติดภารกิจในช่วงเวลาดังกล่าว (สามารถเลือก <b>"ขับรถไปเอง"</b> แทนได้)</span>
+                  </div>
+                ` : ''}
               </div>
             </div>
 
@@ -1955,7 +2044,8 @@
           docRef: f.docRef.trim(),
           teacherCount: Number(f.teacherCount || 0),
           studentCount: Number(f.studentCount || 0),
-          driverId: f.driverId,
+          driverId: f.driverId || 'SELF',
+          selfDriverName: f.driverId === 'SELF' ? String(f.selfDriverName || '').trim() : '',
           note: f.note.trim()
         });
 
@@ -1963,6 +2053,7 @@
           showToast(`ส่งคำขอจองรถเรียบร้อย (${res.bookingId})`, 'success');
           state.vehicleForm.purpose = '';
           state.vehicleForm.destination = '';
+          state.vehicleForm.selfDriverName = '';
           state.vehicleForm.note = '';
           if (res.booking) {
             state.vehicleBookings = [res.booking, ...state.vehicleBookings.filter(b => b.Booking_ID !== res.booking.Booking_ID)];
@@ -2182,31 +2273,32 @@
               <div class="flex justify-between gap-2">
                 <span class="text-slate-500 shrink-0">วัน-เวลา:</span>
                 <span class="font-bold text-slate-900 text-right">
-                  ${isRoom
-                    ? `${formatThaiDateFull(b.Booking_Date)} เวลา ${b.Start_Time} - ${b.End_Time} น.`
-                    : `${formatThaiDateShort(b.Start_Date)} ${b.Start_Time} น. — ${formatThaiDateShort(b.End_Date)} ${b.End_Time} น.`
-                  }
-                </span>
-              </div>
-              ${!isRoom ? `
-                <div class="flex justify-between gap-2">
-                  <span class="text-slate-500 shrink-0">สถานที่ปลายทาง:</span>
-                  <span class="font-bold text-slate-900 text-right">${esc(b.Destination)}${b.Province ? ' จ.' + esc(b.Province) : ''}</span>
-                </div>
-                ${b.Doc_Ref ? `
-                  <div class="flex justify-between gap-2">
-                    <span class="text-slate-500 shrink-0">หนังสืออ้างอิง:</span>
-                    <span class="font-semibold text-slate-800 text-right">${esc(b.Doc_Ref)}</span>
-                  </div>
-                ` : ''}
-              ` : ''}
-            </div>
+      const isSelfDrive = b.Driver_ID === 'SELF' || String(b.Driver_Name || '').startsWith('ขับรถไปเอง');
+      const customDriverName = isSelfDrive ? extractSelfDriverName(b.Driver_Name) : '';
+      const driverMemoText = isSelfDrive
+        ? (customDriverName
+            ? `<b>${esc(customDriverName)}</b> เป็นพนักงานขับรถ (ขับรถไปเอง)`
+            : `<b>......................................................</b> เป็นพนักงานขับรถ (ขับรถไปเอง)`)
+        : `<b>${esc(b.Driver_Name || '-')}</b> เป็นพนักงานขับรถ`;
 
-            <div class="p-3.5 rounded-2xl ${isRoom ? 'bg-indigo-50/50 border-indigo-200/70' : 'bg-sky-50/50 border-sky-200/70'} border space-y-2">
-              <p class="font-bold ${isRoom ? 'text-indigo-900' : 'text-sky-900'} flex items-center gap-1.5">
-                <i data-lucide="clipboard-list" class="w-4 h-4"></i>
-                ${isRoom ? 'รายละเอียดการจัดเตรียมสถานที่และอุปกรณ์' : 'รายละเอียดการเดินทางและผู้โดยสาร'}
-              </p>
+      return `
+        <div class="a4-sheet">
+          <div style="text-align: center; font-weight: bold; font-size: 24px; margin-bottom: 14px;">บันทึกข้อความ</div>
+          <p style="margin: 4px 0;"><b>ส่วนราชการ</b> โรงเรียนจะนะชนูปถัมภ์ กลุ่มสาระการเรียนรู้/ฝ่ายงาน ${esc(b.Department)}</p>
+          <p style="margin: 4px 0;"><b>ที่</b> ${esc(b.Doc_Ref || b.Booking_ID)} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>วันที่</b> ${formatThaiDateFull(b.Start_Date)}</p>
+          <p style="border-bottom: 1.5px solid #000; padding-bottom: 8px; margin: 4px 0;"><b>เรื่อง</b> ขออนุญาตใช้รถราชการ (${esc(b.Vehicle_Name)} หมายเลขทะเบียน ${esc(b.Plate_Number)})</p>
+          <p style="margin-top: 16px;"><b>เรียน</b> ผู้อำนวยการโรงเรียนจะนะชนูปถัมภ์</p>
+          <p style="text-indent: 2.2cm; margin-top: 10px; text-align: justify;">
+            ด้วยข้าพเจ้า <b>${esc(b.Requester_Name)}</b> กลุ่มสาระการเรียนรู้/ฝ่ายงาน <b>${esc(b.Department)}</b> หมายเลขโทรศัพท์ ${esc(b.Phone || '-')}
+            มีความประสงค์ขออนุญาตใช้รถราชการ <b>${esc(b.Vehicle_Name)}</b> หมายเลขทะเบียน <b>${esc(b.Plate_Number)}</b>
+            เพื่อไปราชการเรื่อง <b>"${esc(b.Purpose)}"</b> ณ <b>${esc(b.Destination)}</b> จังหวัด <b>${esc(b.Province || '-')}</b>
+            มีผู้ร่วมเดินทางประกอบด้วย ครู/บุคลากรจำนวน <b>${b.Teacher_Count || 0} คน</b> และนักเรียนจำนวน <b>${b.Student_Count || 0} คน</b>
+          </p>
+          <p style="text-indent: 2.2cm; margin-top: 8px; text-align: justify;">
+            กำหนดออกเดินทางในวันที่ <b>${formatThaiDateFull(b.Start_Date)}</b> เวลา <b>${b.Start_Time} น.</b>
+            และเดินทางกลับในวันที่ <b>${formatThaiDateFull(b.End_Date)}</b> เวลา <b>${b.End_Time} น.</b>
+            โดยมี ${driverMemoText} ${b.Note ? `(หมายเหตุ: ${esc(b.Note)})` : ''}
+          </p>
               ${isRoom ? `
                 <div class="space-y-1.5 text-slate-700">
                   <p><span class="text-slate-500">จำนวนผู้เข้าร่วม:</span> <b>${b.Attendees || 0} คน</b></p>
@@ -2453,6 +2545,7 @@
             Province: b.Province,
             Teacher_Count: b.Teacher_Count,
             Student_Count: b.Student_Count,
+            Driver_ID: b.Driver_ID,
             Driver_Name: b.Driver_Name,
             Note: b.Note,
             Status: b.Status,
@@ -2587,8 +2680,16 @@
     // ========================================================================
     // 11. PAGE 5: APPROVALS WORKBENCH (รายละเอียดครบ + ปุ่มดูรายละเอียดเต็ม)
     // ========================================================================
+    function toggleApprovalSelfDriver(bookingId, val) {
+      const box = document.getElementById('assignSelfWrap_' + bookingId);
+      if (!box) return;
+      if (val === 'SELF') box.classList.remove('hidden');
+      else box.classList.add('hidden');
+    }
+
     function renderApprovalsPage() {
-      const allRooms = state.roomBookings.map(b => ({ ...b, _type: 'room' }));
+      const isVehicleOnlyApprover = state.user && state.user.role === 'Vehicle_Approver';
+      const allRooms = isVehicleOnlyApprover ? [] : state.roomBookings.map(b => ({ ...b, _type: 'room' }));
       const allVehicles = state.vehicleBookings.map(b => ({ ...b, _type: 'vehicle' }));
       const combined = [...allRooms, ...allVehicles];
 
@@ -2600,7 +2701,7 @@
 
       return `
         <div class="space-y-4 fade-in">
-          <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+          <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-2">
             <div class="inline-flex p-1 rounded-xl bg-slate-100">
               <button onclick="state.approvalTab='pending'; renderCurrentPage();"
                 class="px-4 py-1.5 rounded-lg text-xs font-semibold transition ${state.approvalTab === 'pending' ? 'bg-white text-amber-700 shadow-sm' : 'text-slate-600'}">
@@ -2611,6 +2712,8 @@
                 พิจารณาแล้ว
               </button>
             </div>
+            ${isVehicleOnlyApprover ? `<span class="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 text-[11px] font-semibold">🚐 แสดงเฉพาะคำขอจองรถราชการ</span>` : ''}
+          </div>
           </div>
 
           ${list.length === 0 ? `
@@ -2703,17 +2806,29 @@
                     </div>
 
                     <!-- มอบหมายพนักงานขับรถ (เฉพาะคำขอรถที่รออนุมัติ) -->
-                    ${!isRoom && b.Status === 'Pending' ? `
-                      <div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-sky-50/70 border border-sky-200/70 p-3 rounded-xl text-xs">
-                        <label class="font-bold text-sky-900 whitespace-nowrap">มอบหมายพนักงานขับรถ:</label>
-                        <select id="assignDriver_${b.Booking_ID}" class="flex-1 px-3 py-1.5 rounded-lg border border-sky-200 bg-white text-slate-800 font-semibold outline-none">
-                          <option value="AUTO" ${b.Driver_ID === 'AUTO' ? 'selected' : ''}>ให้หัวหน้างานจัดให้</option>
-                          ${activeDrivers.map(d => `
-                            <option value="${d.Driver_ID}" ${b.Driver_ID === d.Driver_ID ? 'selected' : ''}>${esc(d.Driver_Name)} (${esc(d.Phone)})</option>
-                          `).join('')}
-                        </select>
-                      </div>
-                    ` : ''}
+                    ${!isRoom && b.Status === 'Pending' ? (() => {
+                      const isSelf = b.Driver_ID === 'SELF' || String(b.Driver_Name || '').startsWith('ขับรถไปเอง');
+                      const selfName = isSelf ? extractSelfDriverName(b.Driver_Name) : '';
+                      return `
+                        <div class="bg-sky-50/70 border border-sky-200/70 p-3 rounded-xl text-xs space-y-2">
+                          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <label class="font-bold text-sky-900 whitespace-nowrap">ผู้ขับรถราชการ:</label>
+                            <select id="assignDriver_${b.Booking_ID}" onchange="toggleApprovalSelfDriver('${b.Booking_ID}', this.value)"
+                              class="flex-1 px-3 py-1.5 rounded-lg border border-sky-200 bg-white text-slate-800 font-semibold outline-none">
+                              ${activeDrivers.map(d => `
+                                <option value="${d.Driver_ID}" ${!isSelf && b.Driver_ID === d.Driver_ID ? 'selected' : ''}>${esc(d.Driver_Name)} (${esc(d.Phone || '-')})</option>
+                              `).join('')}
+                              <option value="SELF" ${isSelf ? 'selected' : ''}>ขับรถไปเอง (ครู/บุคลากร)</option>
+                            </select>
+                          </div>
+                          <div id="assignSelfWrap_${b.Booking_ID}" class="${isSelf ? '' : 'hidden'}">
+                            <input type="text" id="assignSelfDriver_${b.Booking_ID}" value="${esc(selfName)}"
+                              placeholder="ระบุชื่อผู้ขับรถ (หรือเว้นว่างไว้ลงชื่อในใบ A4)"
+                              class="w-full px-3 py-1.5 rounded-lg border border-sky-200 bg-white text-slate-800 outline-none" />
+                          </div>
+                        </div>
+                      `;
+                    })() : ''}
 
                     <!-- Actions -->
                     <div class="flex flex-wrap items-center justify-end gap-2 pt-1">
@@ -2777,9 +2892,12 @@
       state.isProcessingAction = true;
 
       let driverId = '';
+      let selfDriverName = '';
       if (bookingType === 'vehicle') {
         const sel = document.getElementById('assignDriver_' + bookingId);
         if (sel) driverId = sel.value;
+        const selfInput = document.getElementById('assignSelfDriver_' + bookingId);
+        if (selfInput && driverId === 'SELF') selfDriverName = selfInput.value.trim();
       }
 
       showToast(newStatus === 'Approved' ? 'กำลังบันทึกการอนุมัติ...' : 'กำลังบันทึกไม่อนุมัติ...', 'info');
@@ -2791,7 +2909,8 @@
           bookingId,
           newStatus,
           rejectReason,
-          driverId
+          driverId,
+          selfDriverName
         });
 
         if (res.status === 'success') {
@@ -3011,6 +3130,7 @@
                   class="px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 outline-none shrink-0">
                   <option value="Teacher" ${u.role === 'Teacher' ? 'selected' : ''}>ครู/บุคลากร (Teacher)</option>
                   <option value="Approver" ${u.role === 'Approver' ? 'selected' : ''}>ผู้อนุมัติ (Approver)</option>
+                  <option value="Vehicle_Approver" ${u.role === 'Vehicle_Approver' ? 'selected' : ''}>หัวหน้างานยานพาหนะ (Vehicle_Approver)</option>
                   <option value="AV_Staff" ${u.role === 'AV_Staff' ? 'selected' : ''}>จนท.โสตฯ (AV_Staff)</option>
                   <option value="Driver" ${u.role === 'Driver' ? 'selected' : ''}>พนักงานขับรถ (Driver)</option>
                   <option value="Admin" ${u.role === 'Admin' ? 'selected' : ''}>ผู้ดูแลระบบ (Admin)</option>

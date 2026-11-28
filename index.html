@@ -212,12 +212,25 @@
         </div>
 
         <div class="flex items-center gap-2 shrink-0">
+          <!-- ปุ่มจำลองมุมมองสิทธิ์ (แสดงเฉพาะ Admin เท่านั้น) -->
+          <div id="adminPreviewContainer" class="hidden"></div>
           <button onclick="refreshData(true)" title="รีเฟรชข้อมูลล่าสุด"
             class="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 active:scale-95 transition">
             <i data-lucide="refresh-cw" id="refreshIcon" class="w-4 h-4"></i>
           </button>
         </div>
       </header>
+
+      <!-- แถบแจ้งเตือนเมื่ออยู่ในโหมดจำลองมุมมอง -->
+      <div id="previewBanner" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between gap-2 text-xs text-amber-900">
+        <div class="flex items-center gap-2 min-w-0">
+          <i data-lucide="eye" class="w-4 h-4 text-amber-600 shrink-0"></i>
+          <span id="previewBannerText" class="font-medium truncate">กำลังจำลองมุมมอง...</span>
+        </div>
+        <button onclick="setPreviewRole('Admin')" class="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] shrink-0 active:scale-95 transition">
+          กลับเป็น Admin
+        </button>
+      </div>
 
       <!-- DYNAMIC PAGE CONTENT -->
       <main id="pageContent" class="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-6"></main>
@@ -281,6 +294,8 @@
         pictureUrl: ''
       },
       user: null,
+      realRole: null,
+      previewRole: null,
       rooms: [],
       vehicles: [],
       drivers: [],
@@ -559,6 +574,10 @@
       }
 
       state.user = data.user;
+      state.realRole = data.user.role;
+      if (state.realRole === 'Admin' && state.previewRole) {
+        state.user.role = state.previewRole;
+      }
       state.rooms = data.rooms || [];
       state.vehicles = data.vehicles || [];
       state.drivers = data.drivers || [];
@@ -622,6 +641,59 @@
       } else {
         avatarEl.textContent = u.fullName.charAt(0);
       }
+
+      // แสดงตัวเลือกจำลองมุมมองสิทธิ์เฉพาะ Admin ตัวจริงเท่านั้น
+      const previewContainer = document.getElementById('adminPreviewContainer');
+      const previewBanner = document.getElementById('previewBanner');
+      if (state.realRole === 'Admin') {
+        previewContainer.classList.remove('hidden');
+        previewContainer.innerHTML = `
+          <select onchange="setPreviewRole(this.value)" title="จำลองมุมมองสิทธิ์ (เห็นเฉพาะผู้ดูแลระบบ)"
+            class="px-2.5 py-1.5 rounded-xl border ${state.previewRole ? 'border-amber-400 bg-amber-50 text-amber-800' : 'border-slate-200 bg-white text-slate-700'} text-xs font-semibold outline-none cursor-pointer">
+            <option value="Admin" ${!state.previewRole ? 'selected' : ''}>👁️ Admin</option>
+            <option value="Teacher" ${state.previewRole === 'Teacher' ? 'selected' : ''}>👁️ มุมมองครู</option>
+            <option value="Approver" ${state.previewRole === 'Approver' ? 'selected' : ''}>👁️ ผู้อนุมัติ</option>
+            <option value="AV_Staff" ${state.previewRole === 'AV_Staff' ? 'selected' : ''}>👁️ จนท.โสตฯ</option>
+            <option value="Driver" ${state.previewRole === 'Driver' ? 'selected' : ''}>👁️ คนขับรถ</option>
+          </select>
+        `;
+
+        if (state.previewRole) {
+          previewBanner.classList.remove('hidden');
+          document.getElementById('previewBannerText').textContent =
+            `โหมดทดสอบ: กำลังดูหน้าจอในมุมมอง "${roleLabels[state.previewRole] || state.previewRole}"`;
+        } else {
+          previewBanner.classList.add('hidden');
+        }
+      } else {
+        previewContainer.classList.add('hidden');
+        previewBanner.classList.add('hidden');
+      }
+    }
+
+    function setPreviewRole(role) {
+      if (state.realRole !== 'Admin') return;
+      state.previewRole = (role === 'Admin' || !role) ? null : role;
+      state.user.role = state.previewRole || state.realRole;
+
+      // หากหน้าปัจจุบันไม่มีสิทธิ์เข้าถึงในมุมมองที่เลือก ให้กลับไปหน้าปฏิทิน
+      const allowedIds = getMenuItems().map(i => i.id);
+      if (!allowedIds.includes(state.activeTab)) {
+        state.activeTab = 'dashboard';
+      }
+
+      updateUserProfileUI();
+      renderNavigation();
+      renderCurrentPage();
+
+      const roleNames = {
+        Admin: 'ผู้ดูแลระบบ (ปกติ)',
+        Teacher: 'ครู/บุคลากร (จำลอง)',
+        Approver: 'ผู้อนุมัติ (จำลอง)',
+        AV_Staff: 'จนท.โสตฯ (จำลอง)',
+        Driver: 'พนักงานขับรถ (จำลอง)'
+      };
+      showToast(`สลับเป็นมุมมอง: ${roleNames[state.user.role] || state.user.role}`, 'info');
     }
 
     // ========================================================================
